@@ -42,10 +42,11 @@ INSTALLED_APPS = [
     'app_smart',
     'corsheaders',
     'rest_framework_simplejwt.token_blacklist',
+    'django_filters',
 ]
 
 REST_FRAMEWORK = {
-    'DEFAULT AUTHENTICATION CLASSES': (
+    'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     )
@@ -127,7 +128,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Sao_Paulo'
 
 USE_I18N = True
 
