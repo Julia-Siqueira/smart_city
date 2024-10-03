@@ -1,5 +1,5 @@
 import django_filters
-from app_smart.models import Sensor
+from app_smart.models import Sensor, TemperaturaData
 from rest_framework import permissions
 from app_smart.api import serializers
 from rest_framework.response import Response
@@ -46,5 +46,4 @@ class SensorFilterView(APIView):
         queryset = Sensor.objects.filter(filters)
         serializer = serializers.SensorSerializer(queryset, many=True)
         return Response(serializer.data)
-
 

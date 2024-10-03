@@ -4,7 +4,7 @@ from app_smart.api import serializers
 from rest_framework.response import Response
 from rest_framework import status, viewsets
 from rest_framework.permissions import IsAdminUser, AllowAny, IsAuthenticated
-from ..models import Sensor
+from ..models import Sensor, TemperaturaData
 from app_smart.api.filters import SensorFilter
 from django_filters.rest_framework import DjangoFilterBackend
 
@@ -22,3 +22,9 @@ class SensorViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend]
     filterset_class = SensorFilter
+
+class TemperaturaDataViewSet(viewsets.ModelViewSet):
+    queryset = TemperaturaData.objects.all()
+    serializer_class = serializers.TemperaturaDataSerializer
+    permission_classes = [IsAuthenticated]
+    
