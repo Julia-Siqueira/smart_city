@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from app_smart.models import Sensor
 import csv
-from .forms import formularioCSV, formularioTempCSV
+from .forms import formularioCSV
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 from rest_framework import status, viewsets
@@ -13,7 +13,7 @@ from dateutil import parser
 import pytz
 import os
 import django
-
+from django import forms
 from app_smart.models import TemperaturaData, Sensor
 
 
@@ -56,41 +56,10 @@ class UploadCSV(viewsets.ViewSet):
         
         
 def return_html(request):
-    return render(request, 'sensores.html')
+    return render(request, 'api/sensores.html')
 
-class LoadTemperature(viewsets.ViewSet):
 
-    parser_classes = (MultiPartParser, FormParser)
-
-    # configurações do django
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'smart_city.settings')
-    django.setup()
-
-    def create(self, request):
-        temperaturaCSV = formularioTempCSV(request.POST, request.FILES)
-
-        if not temperaturaCSV.is_valid():
-                print(temperaturaCSV.errors)
-
-        if temperaturaCSV.is_valid():
-            arquivo_valido = request.FILES['arquivo']
-
-            arquivo_decodificado = arquivo_valido.read().decode('utf-8').splitlines()
-            leitor = csv.DictReader(arquivo_decodificado, delimiter=',')
-            line_count = 0
-
-            print("Início da importação:", datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
-            for row in leitor:
-                sensor_id = int(row['sensor_id'])
-                valor = float(row['valor'])
-                timestamp = parser.parse(row['timestamp'])
-                sensor = Sensor.objects.get(id=sensor_id)
-                TemperaturaData.objects.create(sensor=sensor, valor=valor, timestamp=timestamp)
-                line_count += 1
-                if line_count % 10000 == 0:
-                    print(f"{line_count} linhas processadas...")
-            print("Fim da importação:", datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
-            print(f"Dados carregados com sucesso de {csv_file_path}") # ARRUMAR AQUI O CAMINHO
+            
 
         
         

@@ -7,18 +7,21 @@ from app_smart.api.viewsets import CreateUserAPIViewSet, SensorViewSet
 from rest_framework.routers import DefaultRouter # com apenas uma URL pegamos todos os métodos de requisição
 # ele faz isso com base nas ações do ViewsSets
 from app_smart.api.filters import(
-    SensorFilterView
+    SensorFilterView,
+    TemperaturaDataFilterView
 )
 from app_smart.api.viewsets import(
     CreateUserAPIViewSet,
     SensorViewSet,
-    TemperaturaDataViewSet
+    TemperaturaDataViewSet,
+    UmidadeDataViewSet
 )
 
 router = DefaultRouter()
 router.register(r'sensores', SensorViewSet) # 'r' é para uma string bruta
 router.register(r'arquivos', UploadCSV, basename='upload_csv')
-router.register(r'temperatura', TemperaturaDataViewSet)
+router.register(r'umidade', UmidadeDataViewSet)
+
 
 urlpatterns = [
     path('', views.abre_index, name='abre_index'),
@@ -30,5 +33,6 @@ urlpatterns = [
     path('api/token/refresh', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/sensor_filter/', SensorFilterView.as_view(), name='sensor_filter'), #rota para filtragem personalizada
     path('api/carregarCSV/', return_html, name='upload_csv'),
-    
+    path('api/temperatura_filter/', TemperaturaDataFilterView.as_view(), name='sensor_filter')
+    # path('api/temp', TemperaturaDataViewSet.as_view())
 ]

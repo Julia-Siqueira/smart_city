@@ -1,4 +1,4 @@
 user: smart_user
 password: 123456
 
-PAREI NO 4.2 - Incluindo o model Sensor no arquivo serializers.py
+PAREI NO 10.5
