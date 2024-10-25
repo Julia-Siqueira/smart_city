@@ -1,0 +1,5 @@
+- CRUD
+- Aparecer o usuário na tela
+- Gráficos
+- Responsividade
+- Modo claro e escuro

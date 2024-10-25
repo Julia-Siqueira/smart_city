@@ -22,6 +22,9 @@ def abre_cadastro(request):
 def abre_login(request):
     return HttpResponseRedirect('http://localhost:3000')
 
+def abre_visao_geral(request):
+    return HttpResponseRedirect('http://localhost:3000/sensores')
+
 def abre_index(request):
     mensagem = 'MENSAGEM DA FUNÇÃO abre_index'
     return HttpResponse(mensagem)

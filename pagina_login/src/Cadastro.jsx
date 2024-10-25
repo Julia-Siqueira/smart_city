@@ -52,7 +52,7 @@ function Cadastro(){
                 if (data.success) {
                     setSuccessMessage('Cadastro realizado com sucesso!');
                     setErrorMessage('');
-                    window.location.href = "http://localhost:3000/login";
+                    window.location.href = "http://localhost:3000";
                 } else {
                     setErrorMessage(data.message || 'Erro no cadastro.');
                 }
