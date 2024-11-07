@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 function Login() {
 
@@ -8,6 +8,8 @@ function Login() {
     const[password, setPassword] = useState('');
     const[errorMessage, setErrorMessage] = useState('');
     const[token, setToken] = useState('');
+    const navigate = useNavigate();
+    const location = useLocation();
 
     // const chamada quando o formulário é enviado
     // recebe informações do evento que aconteceu e válida elas
@@ -47,10 +49,12 @@ function Login() {
                 if(data.success){
 
                     setToken(data.token);
+                    console.log('Token recebido:', tokenData.access);
                     localStorage.setItem('authToken', data.token);
+                    
                     alert('Login bem-sucedido!');
+                    navigate('/sensores');
 
-                    window.location.href="http://127.0.0.1:8000/api/visao_geral";
                 } else{
                     setErrorMessage(data.message || 'Erro desconhecido');
                 }
@@ -63,31 +67,6 @@ function Login() {
         console.log('Erro:', error);
     }
 
-        // try{
-        //     const response = await fetch('http://localhost:8000/api/login/', {
-        //         method: 'POST',
-        //         headers: {
-        //             'Content-Type': 'application/json',
-        //         },
-        //         body: JSON.stringify({username, password}),
-        //     });
-
-        //     const data = await response.json();
-
-        //     if(data.success){
-
-        //         setToken(data.token);
-        //         localStorage.setItem('authToken', data.token);
-        //         alert('Login bem-sucedido!');
-
-        //         window.location.href="http://127.0.0.1:8000/api/visao_geral";
-        //     } else{
-        //         setErrorMessage(data.message || 'Erro desconhecido');
-        //     }
-        // } catch(error){
-        //     setErrorMessage('Erro de conexão.')
-        //     console.log('Erro:', error);
-        // }
     };
 
     return (

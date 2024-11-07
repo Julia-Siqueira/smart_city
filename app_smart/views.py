@@ -15,6 +15,8 @@ from dateutil import parser
 from django import forms
 from app_smart.models import TemperaturaData, Sensor, UmidadeData, LuminosidadeData, ContadorData
 from .forms import formularioCSV
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import api_view, permission_classes
 
 def abre_cadastro(request):
     return HttpResponseRedirect('http://localhost:3000/cadastro')
@@ -24,6 +26,7 @@ def abre_login(request):
 
 def abre_visao_geral(request):
     return HttpResponseRedirect('http://localhost:3000/sensores')
+
 
 def abre_index(request):
     mensagem = 'MENSAGEM DA FUNÇÃO abre_index'
