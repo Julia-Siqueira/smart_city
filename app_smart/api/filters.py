@@ -109,6 +109,7 @@ class UmidadeFilterView(APIView):
         serializer = serializers.UmidadeDataSerializer(queryset, many=True)
         return Response(serializer.data)
 
+
 class LuminosidadeFilterView(APIView):
     permission_classes = [permissions.IsAuthenticated]
     def post(self, request, *args, **kwargs):

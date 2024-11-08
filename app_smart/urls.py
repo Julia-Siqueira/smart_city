@@ -49,5 +49,7 @@ urlpatterns = [
     path('upload/contadores/', views.upload_contador, name='upload_contadores'),
     path('upload/luminosidade/', views.upload_luminosidade, name='upload_luminosidade'),
     path('upload/temperatura/', views.upload_temperatura, name='upload_temperatura'),
-    path('upload/umidade/', views.upload_umidade, name='upload_umidade')
+    path('upload/umidade/', views.upload_umidade, name='upload_umidade'),
+    path('get/umidade/', views.get_umidade, name='upload_umidade'),
+
 ]

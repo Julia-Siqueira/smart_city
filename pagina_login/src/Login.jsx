@@ -70,9 +70,9 @@ function Login() {
     };
 
     return (
-        <div style={styles.container}>
-            <h2>Login</h2>
-
+        <>
+<h1 style={styles.title}>Smart City</h1>
+<div style={styles.container}>
             {/* Renderização condicional */}
             {errorMessage && <p style={styles.error}>{errorMessage}</p>}
 
@@ -80,7 +80,7 @@ function Login() {
         
         {/* Nome do usuário */}
         <div style={styles.inputGroup}>
-            <label htmlFor='username'>Nome de usuário</label>
+            <p style={styles.text}>Nome de usuário</p>
             <input
                 type="text"
                 id="username" // serve para o htmlFor
@@ -94,7 +94,7 @@ function Login() {
 
         {/* Senha */}
         <div style={styles.inputGroup}>
-            <label htmlFor='password'>Senha</label>
+            <p style={styles.text}>Senha</p>
             <input
                 type='password'
                 id='password'
@@ -109,23 +109,25 @@ function Login() {
         </form>
         <a style={styles.link}><Link to="/cadastro">Ainda não possui login? Faça seu cadastro.</Link></a>
         </div>
+        </>
+        
 
             
     );
 }
 
-const styles = {
+export const styles = {
     container: {
       maxWidth: '400px',
       margin: '0 auto',
       paddingRight: '60px',
-      paddingLeft: '30px',
-      paddingTop: '20px',
-      paddingBottom: '20px',
-      border: '1px solid #ccc',
-      borderRadius: '8px',
+      paddingLeft: '60px',
+      paddingTop: '60px',
+      paddingBottom: '60px',
+      border: '1px solid #6D9DBE',
+      borderRadius: '20px',
       textAlign: 'center',
-      backgroundColor: '#f9f9f9',
+      backgroundColor: '#6D9DBE',
     },
     inputGroup: {
       marginBottom: '15px',
@@ -134,18 +136,23 @@ const styles = {
       width: '100%',
       padding: '10px',
       fontSize: '16px',
-      borderRadius: '4px',
-      border: '1px solid #ccc',
+      borderRadius: '12px',
+      border: '1px solid #fff',
+      height: '30px',
+      fontFamily: 'Lexend, sans-serif'
     },
     button: {
       padding: '10px 20px',
       fontSize: '16px',
-      backgroundColor: '#4CAF50',
+      backgroundColor: '#8CB9D9',
       color: 'white',
       border: 'none',
-      borderRadius: '4px',
+      borderRadius: '15px',
       cursor: 'pointer',
-      marginBottom: '20px'
+      marginBottom: '20px',
+      width: '70%',
+      height: '40px',
+      fontFamily: 'Lexend, sans-serif'
     },
     error: {
       color: 'red',
@@ -153,7 +160,17 @@ const styles = {
     },
     link:{
         marginBottom: '10px',
+        color: 'white'
+    },
+    text:{
+        color: 'white',
+        textAlign: 'left',
+        fontSize: '18px'
+    },
+    title:{
+        color:'white',
+        fontSize: '40px'
     }
   };
 
-export default Login;
+  export default Login;

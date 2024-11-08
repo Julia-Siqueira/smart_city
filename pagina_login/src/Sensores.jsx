@@ -1,15 +1,25 @@
 import React from "react";
 import './Sensores.css';
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 // quando é uma função, precisa começar com letra maiúscula
 function Sensores(){
+
+    const navigate = useNavigate();
+    const handleNavigate = () => {
+        navigate('/crud');
+    }
+    const handleNavigateTabelas = () => {
+        navigate('/tabelas');
+    }
+
     return (
         <div className="container-formulario">
               <div>
                  <h1>Upload de Arquivos CSV</h1>
-                 <button className="crud">Fazer Alterações</button>
-                 <button className="tabelas">Ver Tabelas</button>
+                 <button className="crud" onClick={handleNavigate}>Fazer Alterações</button>
+                 <button className="tabelas" onClick={handleNavigateTabelas}>Ver Tabelas</button>
                  
              </div>
             

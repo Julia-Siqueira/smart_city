@@ -5,17 +5,20 @@ import Cadastro from './Cadastro';
 import Sensores from './Sensores.jsx';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import PrivateRoute from './PrivateRoute';
+import CrudUmidade from './CrudUmidade.jsx';
+import TabelaSensores from './Tabelas.jsx';
 
 function App() {
   return (
-    <div>
-      <h1 style={styles.title}>Bem vindo(a) ao DigiTown</h1>
+    <div style={styles.background}>
       <Router>
         <Routes>
           <Route path="/" element={<Login />}/>
           <Route path="/cadastro" element={<Cadastro />}/>
           {/* <Route path="/sensores" element={<PrivateRoute><Sensores /></PrivateRoute>}/> */}
           <Route path="/sensores" element={<Sensores />}/>
+          <Route path="/crud" element={<CrudUmidade />}/>
+          <Route path="/tabelas" element={<TabelaSensores />}/>
         </Routes>
       </Router>
     </div>
