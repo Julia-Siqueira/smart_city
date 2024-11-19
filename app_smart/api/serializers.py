@@ -27,6 +27,8 @@ class TemperaturaDataSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class UmidadeDataSerializer(serializers.ModelSerializer):
+    sensor_id = serializers.PrimaryKeyRelatedField(source='sensor', read_only=True)
+    
     class Meta:
         model = UmidadeData
         fields = '__all__'

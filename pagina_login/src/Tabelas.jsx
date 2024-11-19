@@ -6,41 +6,48 @@ function TabelaSensores(){
     const[error, setError] = useState(null);
     const[token, setToken] = useState('');
 
-    const fetchData = async () => {
-        try {
-            // O GET NAO ESTA FUNCIONANDO
-          const response = await axios.post('http://127.0.0.1:8000/get/umidade/', {
-            sensor_id: 1, // Exemplo de filtro
-          }, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            }
-          });
+    useEffect(() => () => {
+      const fetchUmidade = async () => {
+        try{
+          const response = await axios.get("http://127.0.0.1:8000/api/umidade/");
+          console.log(response.data);
           setData(response.data);
-        } catch (err) {
-          console.error("Erro ao carregar os dados:", err);
-          setError('Erro ao carregar os dados');
+        }
+        catch(error){
+          console.log("Erro: ", error);
+        }
+        finally{
+
         }
       };
-      
+
+      fetchUmidade();
+    }, []);
 
     return(
-        <div>
-            <h2>Dados dos sensores</h2>
-            <table>
-                <thead>
+        <div style={styles.body}>
+            <h2 style={styles.h2}>Dados dos sensores</h2>
+            <div style={styles.botoes}>
+              <button style={styles.button}>Contador</button>
+              <button style={styles.button}>Temperatura</button>
+              <button style={styles.button}>Luminosidade</button>
+              <button style={styles.button}>Umidade</button>
+            </div>
+            <table style={styles.tabela}>
+                <thead style={styles.colunas}>
                     <tr>
-                        <th>Sensor ID</th>
-                        <th>Valor</th>
-                        <th>Timestamp</th>
+                        <th style={styles.categoria}>ID</th>
+                        <th style={styles.categoria}>Sensor ID</th>
+                        <th style={styles.categoria}>Valor</th>
+                        <th style={styles.categoria}>Timestamp</th>
                     </tr>
                 </thead>
-                <tbody>
-                    {data.map((sensor, index) => (
-                        <tr key={index}>
-                            <td>{sensor.sensor_id}</td>
-                            <td>{sensor.valor}</td>
-                            <td>{sensor.timestamp}</td>
+                <tbody style={styles.linhas}>
+                    {data.map((data) => (
+                        <tr style={styles.categoria} key={data.id}>
+                            <td style={styles.categoria}>{data.sensor_id}</td>
+                            <td style={styles.categoria}>{data.valor}</td>
+                            <td style={styles.categoria}>{new Date(data.timestamp).toLocaleString()}</td>
                         </tr>
                     ))}
                 </tbody>
@@ -48,6 +55,54 @@ function TabelaSensores(){
         </div>
     );
 
+}
+
+export const styles = {
+  body: {
+    margin: 0,
+    padding: 0,
+    fontFamily: "'Poppins', sans-serif",
+    background: "linear-gradient(135deg, #8CB9D9 0%, #8CB9D9 100%)",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    minHeight: "100vh",
+},
+
+  h2:{
+    color: "#fff",
+    textAlign: "center",
+    fontSize: "30px"
+  },
+  categoria:{
+    color:"#000",
+  },
+
+  colunas:{
+    backgroundColor: "#e5e5e5",
+  },
+  linhas:{
+    backgroundColor: "#fff",
+  },
+  button: {
+    padding: '10px 20px',
+    fontSize: '16px',
+    backgroundColor: '#68a1c9',
+    color: 'white',
+    border: 'none',
+    borderRadius: '15px',
+    cursor: 'pointer',
+    marginBottom: '20px',
+    width: '15%',
+    height: '40px',
+    fontFamily: 'Lexend, sans-serif',
+    marginLeft: '20px'
+  },
+  botoes:{
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center'
+  }
 }
 
 export default TabelaSensores;

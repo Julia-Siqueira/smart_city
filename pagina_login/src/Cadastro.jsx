@@ -66,12 +66,13 @@ function Cadastro(){
     };
 
     return(
+        <div style={styles.body}>
         <div style={styles.container}>
-            <h2>Cadastro</h2>
+            <h2 style={styles.title}>Cadastro</h2>
             {errorMessage && <p style={styles.error}>{errorMessage}</p>}
             {successMessage && <p style={styles.success}>{successMessage}</p>}
             <form onSubmit={handleSubmit}>
-                <label>
+                <p style={styles.text}>
                     Escolha seu nome de Usuário:
                 <input
                     style={styles.input}
@@ -80,8 +81,8 @@ function Cadastro(){
                     onChange={(e) => setUserName(e.target.value)}
                     required
                     />
-                </label>
-                <label>
+                </p>
+                <p style={styles.text}>
                     Digite seu e-mail:
                     <input
                        style={styles.input}
@@ -89,8 +90,8 @@ function Cadastro(){
                        value={email}
                        onChange={(e) => setEmail(e.target.value)}
                        required/>
-                </label>
-                <label>
+                </p>
+                <p style={styles.text}>
                     Escolha uma senha:
                     <input
                        style={styles.input}
@@ -98,8 +99,8 @@ function Cadastro(){
                        value={password}
                        onChange={(e) => setPassword(e.target.value)}
                        required/>
-                </label>
-                <label>
+                </p>
+                <p style={styles.text}>
                     Confirme sua senha:
                     <input
                        style={styles.input}
@@ -107,35 +108,53 @@ function Cadastro(){
                        value={confirmPassword}
                        onChange={(e) => setConfirmPassword(e.target.value)}
                        required/>
-                </label>
+                </p>
                 <button type="submit" style={styles.button}>
                     Cadastrar
                 </button>
             </form>
         </div>
+        </div>
     );
 }
 
-const styles = {
+export const styles = {
+    body:{
+        margin: 0,
+        padding: 0,
+        fontFamily: "'Poppins', sans-serif",
+        background: "linear-gradient(135deg, #8CB9D9 0%, #8CB9D9 100%)",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        minHeight: "100vh",
+    },
+
     container: {
         maxWidth: '400px',
-        margin: '0 auto',
-        padding: '60px',
-        border: '1px solid #ccc',
-        borderRadius: '8px',
-        textAlign: 'center',
-        backgroundColor: '#f9f9f9',
+      margin: '0 auto',
+      paddingRight: '60px',
+      paddingLeft: '60px',
+      paddingTop: '60px',
+      paddingBottom: '60px',
+      border: '1px solid #6D9DBE',
+      borderRadius: '20px',
+      textAlign: 'center',
+      backgroundColor: '#6D9DBE',
     },
     inputGroup:{
         marginBottom: '15px',
     },
     input: {
+       
         width: '100%',
         padding: '10px',
         fontSize: '16px',
-        borderRadius: '4px',
-        border: '1px solid #ccc',
-        marginBottom: '10px'
+        borderRadius: '12px',
+        border: '1px solid #fff',
+        height: '30px',
+        fontFamily: 'Lexend, sans-serif'
+        
     },
     button: {
         padding: '10px 20px',
@@ -155,6 +174,29 @@ const styles = {
         color: 'green',
         marginBottom: '15px',
     },
+    text:{
+        color: 'white',
+        textAlign: 'left',
+        fontSize: '18px'
+    },
+    title:{
+        color:'white',
+        fontSize: '40px',
+        textAlign: "left"
+    },
+    button: {
+        padding: '10px 20px',
+        fontSize: '16px',
+        backgroundColor: '#8CB9D9',
+        color: 'white',
+        border: 'none',
+        borderRadius: '15px',
+        cursor: 'pointer',
+        marginBottom: '20px',
+        width: '70%',
+        height: '40px',
+        fontFamily: 'Lexend, sans-serif'
+      },
 }
 
 export default Cadastro;

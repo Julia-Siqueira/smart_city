@@ -70,46 +70,46 @@ function Login() {
     };
 
     return (
-        <>
-<h1 style={styles.title}>Smart City</h1>
-<div style={styles.container}>
+        <div style={styles.body}>
+            <h1 style={styles.title}>Smart City</h1>
+            <div style={styles.container}>
             {/* Renderização condicional */}
             {errorMessage && <p style={styles.error}>{errorMessage}</p>}
 
-        <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit}>
         
-        {/* Nome do usuário */}
-        <div style={styles.inputGroup}>
-            <p style={styles.text}>Nome de usuário</p>
-            <input
-                type="text"
-                id="username" // serve para o htmlFor
-                value={username}
-                onChange={(e) => setUserName(e.target.value)}
-                style={styles.input}
-                // e: informações sobre a interação
-                // e.target.value: elemento que gerou o evento e a informação inserida
-            />
-        </div>
+                {/* Nome do usuário */}
+                <div style={styles.inputGroup}>
+                    <p style={styles.text}>Nome de usuário</p>
+                    <input
+                        type="text"
+                        id="username" // serve para o htmlFor
+                        value={username}
+                        onChange={(e) => setUserName(e.target.value)}
+                        style={styles.input}
+                        // e: informações sobre a interação
+                        // e.target.value: elemento que gerou o evento e a informação inserida
+                    />
+                </div>
 
-        {/* Senha */}
-        <div style={styles.inputGroup}>
-            <p style={styles.text}>Senha</p>
-            <input
-                type='password'
-                id='password'
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                style={styles.input}
-            />
-        </div>
+                {/* Senha */}
+                <div style={styles.inputGroup}>
+                    <p style={styles.text}>Senha</p>
+                    <input
+                        type='password'
+                        id='password'
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        style={styles.input}
+                    />
+                </div>
 
-        {/* Botão de envio */}
-        <button type='submit' style={styles.button}>Entrar</button>
-        </form>
+                {/* Botão de envio */}
+                <button type='submit' style={styles.button}>Entrar</button>
+            </form>
         <a style={styles.link}><Link to="/cadastro">Ainda não possui login? Faça seu cadastro.</Link></a>
         </div>
-        </>
+        </div>
         
 
             
@@ -117,6 +117,17 @@ function Login() {
 }
 
 export const styles = {
+    body: {
+        margin: 0,
+        padding: 0,
+        fontFamily: "'Poppins', sans-serif",
+        background: "linear-gradient(135deg, #8CB9D9 0%, #8CB9D9 100%)",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        minHeight: "100vh",
+    },
     container: {
       maxWidth: '400px',
       margin: '0 auto',
@@ -157,10 +168,15 @@ export const styles = {
     error: {
       color: 'red',
       marginBottom: '15px',
+      backgroundColor: 'white',
+      width: '50%',
+      borderRadius: '5px',
+      padding: '5px'
     },
     link:{
         marginBottom: '10px',
-        color: 'white'
+        color: 'white',
+
     },
     text:{
         color: 'white',
@@ -169,7 +185,8 @@ export const styles = {
     },
     title:{
         color:'white',
-        fontSize: '40px'
+        fontSize: '40px',
+        textAlign: "left"
     }
   };
 
