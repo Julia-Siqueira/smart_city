@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import Navbar from './Components/NavBar';
 
 export default function CrudUmidade() {
     const [index, setIndex] = useState('');
@@ -60,27 +61,28 @@ export default function CrudUmidade() {
     };
 
     return (
-        <div style={styles.container}>
+        <div style={styles.body}>
+            <Navbar />
+            <div style={styles.container}>
+                <h1 style={styles.titulo}> CRUD </h1>
             <div style={styles.get}>
-                <p>GET</p>
-                <div style={{ display: 'flex', flexDirection: 'row' }}>
-                    <p style={{ marginBottom: 10, fontWeight: 'bold' }}>ID: </p>
+                <p style={styles.title}>GET</p>
+                <div style={styles.text}>
+                    <p style={styles.text}>ID: </p>
                     <input
                         value={index}
                         onChange={(e) => setIndex(e.target.value)}
                         style={styles.caixaID}
                     />
-                    <button style={styles.btn} onClick={capturar}>
-                        GET
-                    </button>
+                    <button style={styles.btn} onClick={capturar}> <p style={styles.textoBotao}>GET</p> </button>
                 </div>
-                <p style={{ marginBottom: 10, fontWeight: 'bold' }}>Sensor</p>
+                <p style={styles.text}>Sensor</p>
                 <input
                     value={getIDG}
                     onChange={(e) => setIDG(e.target.value)}
                     style={styles.caixaGet}
                 />
-                <p style={{ marginBottom: 10, fontWeight: 'bold' }}>Valor</p>
+                <p style={styles.text}>Valor</p>
                 <input
                     value={getValorG}
                     onChange={(e) => setValorG(e.target.value)}
@@ -88,7 +90,7 @@ export default function CrudUmidade() {
                 />
                 <div style={styles.global}>
                     <div style={styles.aic}>
-                        <p style={{ marginBottom: 10, fontWeight: 'bold' }}>Timestamp</p>
+                        <p style={styles.text}>Timestamp</p>
                         <input
                             value={getTimeG}
                             onChange={(e) => setTimeG(e.target.value)}
@@ -99,14 +101,14 @@ export default function CrudUmidade() {
             </div>
 
             <div style={styles.post}>
-                <p>POST</p>
-                <p style={{ marginBottom: 10, fontWeight: 'bold' }}>Sensor</p>
+                <p style={styles.title}>POST - UPDATE - DELETE</p>
+                <p style={styles.text}>Sensor</p>
                 <input
                     value={getID}
                     onChange={(e) => setID(e.target.value)}
                     style={styles.caixaGet}
                 />
-                <p style={{ marginBottom: 10, fontWeight: 'bold' }}>Valor</p>
+                <p style={styles.text}>Valor</p>
                 <input
                     value={getValor}
                     onChange={(e) => setValor(e.target.value)}
@@ -114,7 +116,7 @@ export default function CrudUmidade() {
                 />
                 <div style={styles.global}>
                     <div style={styles.aic}>
-                        <p style={{ marginBottom: 10, fontWeight: 'bold' }}>Timestamp</p>
+                        <p style={styles.text}>Timestamp</p>
                         <input
                             value={getTime}
                             onChange={(e) => setTime(e.target.value)}
@@ -122,56 +124,95 @@ export default function CrudUmidade() {
                         />
                     </div>
                 </div>
-                <button style={styles.btnP} onClick={postar}>
-                    POST
-                </button>
+                <div style={styles.botoes}>
+                    <button style={styles.btnP} onClick={postar}> <p style={styles.textoBotao}>POST</p> </button>
+                    <button style={styles.btnU} onClick={postar}> <p style={styles.textoBotao}>UPDATE</p> </button>
+                    <button style={styles.btnD} onClick={postar}> <p style={styles.textoBotao}>DELETE</p> </button>
+                </div>
+                
             </div>
+            
         </div>
+        </div>
+        
     );
 }
 
 export const styles = {
+    text:{
+        display: 'flex', 
+        flexDirection: 'row' 
+    },
+    textoBotao:{
+        fontWeight: '700'
+    },
+    body:{
+        margin: 0,
+        padding: 0,
+        fontFamily: "'Poppins', sans-serif",
+        background: "linear-gradient(135deg, #8CB9D9 0%, #8CB9D9 100%)",
+        display: "flex",
+        flexDirection: 'column',
+        minHeight: "100vh",
+    },
   container: {
-      backgroundColor: '#fff',
       padding: '10px',
       display: 'flex',
-      flexDirection: 'row',
+      flexDirection: 'column',
       gap: '20px',
-      borderRadius: '20px'
+      borderRadius: '20px',
+      justifyContent: 'center',
+      alignItems: 'center'
   },
   get: {
-      backgroundColor: '#DCD6F7',
-      padding: '20px',
-      borderRadius: '8px',
+    backgroundColor: "#edf6f9",
+    padding: "30px 30px",
+    borderRadius: "25px",
+    boxShadow: "0 15px 35px rgba(0, 0, 0, 0.3)",
+    width: "80%",
+    textAlign: "center",
+    display: "flex",
+    flexDirection: "column",
+    marginBottom: '1%'
   },
   post: {
-      backgroundColor: '#D6E5E3',
-      padding: '20px',
-      borderRadius: '8px',
+    backgroundColor: "#edf6f9",
+    padding: "30px 30px",
+    borderRadius: "25px",
+    boxShadow: "0 15px 35px rgba(0, 0, 0, 0.3)",
+    width: "80%",
+    textAlign: "center",
+    display: "flex",
+    flexDirection: "column",
+    marginBottom: '5%' 
   },
   caixaGet: {
-      height: '25px',
-      borderRadius: '5px',
-      padding: '10px',
-      backgroundColor: 'white',
-      width: '90%',
-      marginBottom: '10px',
-      outline: 'none',
+    width: '90%',
+    height: '20px',
+    borderWidth: '2px',
+    borderRadius: '8px',
+    borderColor: '#4F728B',
+    borderStyle: 'solid',
+    marginBottom: '20px',
+    marginLeft: '10px',
+    padding: '10px',
+    outline: 'none',
   },
   caixaID: {
       width: '10%',
-      height: '30px',
-      borderWidth: '1px',
+      height: '20px',
+      borderWidth: '2px',
       borderRadius: '8px',
-      backgroundColor: 'white',
-      borderColor: 'white',
-      marginBottom: '10px',
+      borderColor: '#4F728B',
+      borderStyle: 'solid',
+      marginBottom: '20px',
+      marginLeft: '10px',
       padding: '10px',
       outline: 'none',
   },
   btn: {
       width: '10%',
-      height: '30px',
+      height: '40px',
       backgroundColor: '#94A1DB',
       marginLeft: '15px',
       borderRadius: '10px',
@@ -180,8 +221,8 @@ export const styles = {
       border: 'none',
   },
   btnP: {
-      width: '15%',
-      height: '30px',
+      width: '10%',
+      height: '40px',
       backgroundColor: '#5F958E',
       marginLeft: '15px',
       borderRadius: '10px',
@@ -189,9 +230,19 @@ export const styles = {
       color: 'white',
       border: 'none',
   },
+  btnU: {
+      width: '10%',
+      height: '40px',
+      backgroundColor: '#8e7dbe',
+      marginLeft: '15px',
+      borderRadius: '10px',
+      cursor: 'pointer',
+      color: 'white',
+      border: 'none',
+  },
   btnD: {
-      width: '15%',
-      height: '30px',
+      width: '10%',
+      height: '40px',
       backgroundColor: '#d4778e',
       marginLeft: '15px',
       borderRadius: '10px',
@@ -215,6 +266,20 @@ export const styles = {
       borderRadius: '10px',
       float: 'right',
   },
+  title:{
+    fontSize: '30px',
+    fontWeight: '500',
+    color: '#4F728B'
+  },
+  titulo:{
+    color: 'white',
+    fontSize: '50px'
+  },
+  botoes:{
+    display: 'flex',
+    alignItems: 'flex-start',
+    marginTop: '2%'
+  }
 };
 
 

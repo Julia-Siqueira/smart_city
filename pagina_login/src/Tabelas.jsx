@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import Navbar from './Components/NavBar';
 
 function TabelaSensores(){
     const[data, setData] = useState([]);
@@ -26,6 +27,7 @@ function TabelaSensores(){
 
     return(
         <div style={styles.body}>
+          <Navbar/>
             <h2 style={styles.h2}>Dados dos sensores</h2>
             <div style={styles.botoes}>
               <button style={styles.button}>Contador</button>
@@ -33,6 +35,7 @@ function TabelaSensores(){
               <button style={styles.button}>Luminosidade</button>
               <button style={styles.button}>Umidade</button>
             </div>
+            <div style={styles.divTabela}>
             <table style={styles.tabela}>
                 <thead style={styles.colunas}>
                     <tr>
@@ -52,6 +55,8 @@ function TabelaSensores(){
                     ))}
                 </tbody>
             </table>
+            </div>
+            
         </div>
     );
 
@@ -65,14 +70,15 @@ export const styles = {
     background: "linear-gradient(135deg, #8CB9D9 0%, #8CB9D9 100%)",
     display: "flex",
     flexDirection: "column",
-    justifyContent: "center",
+    
     minHeight: "100vh",
 },
-
   h2:{
     color: "#fff",
     textAlign: "center",
-    fontSize: "30px"
+    fontSize: "50px",
+    marginTop: '5%',
+    marginBottom: '2%'
   },
   categoria:{
     color:"#000",
@@ -99,6 +105,14 @@ export const styles = {
     marginLeft: '20px'
   },
   botoes:{
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  tabela:{
+    width: '70%',
+  },
+  divTabela:{
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center'

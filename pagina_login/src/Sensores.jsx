@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "./Components/NavBar";
+import ApexChart from "./Components/PieChart";
 
 // quando é uma função, precisa começar com letra maiúscula
 function Sensores() {
@@ -27,9 +28,22 @@ function Sensores() {
                 <CarregarForm title="Temperatura" actionUrl="/upload_temperatura" />
                 <CarregarForm title="Umidade" actionUrl="/upload_umidade" />
             </div>
-            <div style={styles.divGraficos}>
-                <h1 style={styles.tituloGrafico}>Gráficos</h1>
+            <div style={styles.secaoGraficos}>
+                <div style={styles.divGraficos}>
+                    <h1 style={styles.tituloGrafico}>Hoje</h1>
+                    <ApexChart />
+                </div>
+                <div style={styles.divGraficos}>
+                    <h1 style={styles.tituloGrafico}>Esse Mês</h1>
+                    <ApexChart />
+                </div>
+                <div style={styles.divGraficos}>
+                    <h1 style={styles.tituloGrafico}>Esse Ano</h1>
+                    <ApexChart />
+                </div>
+
             </div>
+            
         </div>
     );
 }
@@ -146,19 +160,22 @@ export const styles = {
     },
     divGraficos:{
         backgroundColor: "rgba(255, 255, 255, 0.95)",
-        padding: "40px 30px",
+        padding: "30px 10px",
         borderRadius: "25px",
         boxShadow: "0 15px 35px rgba(0, 0, 0, 0.3)",
-        maxWidth: "1500px",
-        width: "30%",
+        width: "25%",
         textAlign: "center",
         display: "flex",
-        flexDirection: "column",
-        margin: "0 auto",
-        marginTop: '20px'
+        flexDirection: "column" 
     },
     tituloGrafico:{
         color: '#4f728b'
+    },
+    secaoGraficos:{
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "space-evenly",
+        margin: "5%"
     }
 };
 

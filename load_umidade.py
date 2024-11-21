@@ -9,8 +9,6 @@ import django
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'smart_city.settings')
 django.setup()
 
-csv_file_path = 'C:\\Users\\48727174816\\Desktop\\smart_city\\dados\\umidade_data.csv'
-
 from app_smart.models import UmidadeData, Sensor
 def load_umidade_data(csv_file_path):
     print('Início da importação:', datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
