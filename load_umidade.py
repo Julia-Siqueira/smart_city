@@ -28,3 +28,4 @@ def load_umidade_data(csv_file_path):
     print(f"Dados carregados com sucesso de {csv_file_path}")
 
 load_umidade_data('dados/umidade_data.csv')
+

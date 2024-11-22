@@ -71,6 +71,12 @@ MIDDLEWARE = [
 
 ]
 
+# settings.py
+
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:3000',  # Adiciona o domínio do seu frontend
+]
+
 CORS_ALLOW_ALL_ORIGINS = True
 
 CORS_ALLOWED_ORIGINS = [
@@ -90,7 +96,11 @@ CORS_ALLOW_METHODS = [
 
 CORS_ALLOW_HEADERS = [
     'content-type',
-    'authorization'
+    'x-csrftoken',  # Permitir o cabeçalho x-csrftoken
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'x-requested-with',
 ]
 
 

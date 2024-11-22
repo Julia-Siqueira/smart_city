@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "./Components/NavBar";
 import ApexChart from "./Components/PieChart";
+import CarregarForm from "./Components/CarregarForm";  // Importando o componente CarregarForm
 
 // quando é uma função, precisa começar com letra maiúscula
 function Sensores() {
@@ -15,14 +16,14 @@ function Sensores() {
 
     return (
         <div style={styles.body}>
-            <Navbar/>
+            <Navbar />
             <div style={styles.containerFormulario}>
                 <div>
                     <h1 style={styles.h1}>Upload de Arquivos CSV</h1>
                     <button style={styles.button} onClick={handleNavigate}>Fazer Alterações</button>
                     <button style={styles.button} onClick={handleNavigateTabelas}>Ver Tabelas</button>
                 </div>
-                <CarregarForm title="Sensores" actionUrl="/upload_sensores" />
+                <CarregarForm title="Sensores" actionUrl="http://127.0.0.1:8000/upload/sensores/" />
                 <CarregarForm title="Contador" actionUrl="/upload_contadores" />
                 <CarregarForm title="Luminosidade" actionUrl="/upload_luminosidade" />
                 <CarregarForm title="Temperatura" actionUrl="/upload_temperatura" />
@@ -41,48 +42,8 @@ function Sensores() {
                     <h1 style={styles.tituloGrafico}>Esse Ano</h1>
                     <ApexChart />
                 </div>
-
             </div>
-            
         </div>
-    );
-}
-
-function CarregarForm({ title, actionUrl }) {
-    const [fileName, setFileName] = useState('');
-
-    const handleFileChange = (e) => {
-        const file = e.target.files[0];
-        setFileName(file ? file.name : '');
-    };
-
-    return (
-        <div style={styles.secaoFormulario}>
-            <h2 style={styles.h2}>{title}</h2>
-            <form method="POST" encType="multipart/form-data" action={actionUrl}>
-                <div style={styles.uploadArquivos}>
-                    <label
-                        htmlFor={`file_${(title || '').toLowerCase()}`}
-                        id={`label_${(title || '').toLowerCase()}`}
-                        style={styles.label}
-                    >
-                        {fileName ? `Arquivo selecionado: ${fileName}` : `Escolha o arquivo de ${title || 'arquivo'}`}
-                    </label>
-                    <input
-                        type="file"
-                        name="file"
-                        accept=".csv"
-                        required
-                        onChange={handleFileChange}
-                        style={{ display: 'none' }}
-                    />
-                </div>
-                <button type="submit" style={styles.button}>Enviar {title || 'arquivo'}</button>
-            </form>
-
-      
-        </div>
-
     );
 }
 
@@ -158,7 +119,7 @@ export const styles = {
         transition: "all 0.3s ease",
         fontFamily: "Lexend",
     },
-    divGraficos:{
+    divGraficos: {
         backgroundColor: "rgba(255, 255, 255, 0.95)",
         padding: "30px 10px",
         borderRadius: "25px",
@@ -166,12 +127,12 @@ export const styles = {
         width: "25%",
         textAlign: "center",
         display: "flex",
-        flexDirection: "column" 
+        flexDirection: "column"
     },
-    tituloGrafico:{
+    tituloGrafico: {
         color: '#4f728b'
     },
-    secaoGraficos:{
+    secaoGraficos: {
         display: "flex",
         flexDirection: "row",
         justifyContent: "space-evenly",

@@ -7,6 +7,8 @@ class Sensor(models.Model):
         ('Contador', 'Contador'),
         ('Luminosidade', 'Luminosidade')
     ]
+
+    sensor_id = models.IntegerField(unique=True, null=True, blank=True)
     tipo = models.CharField(max_length=50, choices=TIPOS_SENSOR_CHOICES)
     mac_address = models.CharField(max_length=20, null=True) # endereçamento físico do sensor (placa ESP)
     latitude = models.FloatField()

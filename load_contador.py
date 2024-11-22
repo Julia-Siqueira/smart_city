@@ -17,11 +17,17 @@ def load_contador_data(csv_file_path):
         for row in reader:
             sensor_id = int(row['sensor_id'])
             timestamp = parser.parse(row['timestamp'])
-            sensor = Sensor.objects.get(id=sensor_id)
+
+        try:
+            sensor = Sensor.objects.get(sensor_id=sensor_id)
             ContadorData.objects.create(sensor=sensor, timestamp=timestamp)
             line_count += 1
             if line_count & 10000 == 0:
                 print(f"{line_count} linhas processadas...")
+
+        except Sensor.DoesNotExist:
+            print(f"{line_count} linhas processadas...")
+            
     print("Fim da importação:", datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
     print(f"Dados carregados com sucesso de {csv_file_path}")
 

@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate
 from app_smart.models import Sensor
@@ -19,6 +19,8 @@ from .forms import formularioCSV
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework import serializers
+from django.core.exceptions import ValidationError
+
 
 def abre_cadastro(request):
     return HttpResponseRedirect('http://localhost:3000/cadastro')
@@ -87,15 +89,46 @@ def login_view(request):
 def return_html(request):
     return render(request, 'api/sensores.html')
 
-
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def upload_sensores(request):
     campos_esperados = ['tipo', 'unidade_medida', 'latitude', 'longitude', 'localizacao', 'responsavel', 'status_operacional', 'obsrevacao', 'mac_address']
     
-    if request.method == 'POST':
-        return UploadCSV(request, Sensor, campos_esperados)
-    
-    form = formularioCSV()
-    return render(request, 'api/sensores.html', {'form': form})
+    if request.method == 'POST' and request.FILES.get('file'):
+        file = request.FILES['file']
+
+        if not file.name.endswith('.csv'):
+            return JsonResponse({'error': 'O arquivo deve ser um CSV'}, status=400)
+        
+        try:
+            csv_data = file.read().decode('utf-8').splitlines()
+            reader = csv.DictReader(csv_data)
+
+            for row in reader:
+                for campo in campos_esperados:
+                    if campo not in row:
+                        raise ValidationError(f'O campo "{campo}" está faltando no arquivo')
+
+            Sensor.objects.create(
+                tipo = row['tipo'],
+                unidade_medida = row['unidade_medida'],
+                latitude = row['latitude'],
+                longitude = row['longitude'],
+                localizacao = row['localizacao'],
+                responsavel = row['responsavel'],
+                status_operacional = row['status_operacional'],
+                observacao = row['observacao'],
+                mac_address = row['mac_address']
+            )
+
+            return JsonResponse({'message': 'Arquivo processado e dados inseridos com sucesso'})
+        
+        except ValidationError as e:
+            return JsonResponse({'error': str(e)}, status=400)
+        except Exception as e:
+            return JsonResponse({'error': 'Erro ao processar o arquivo.', 'details': str(e)}, status=500)
+
+    return render(request, 'api/sensores.html')   
 
         
 def upload_temperatura(request):
