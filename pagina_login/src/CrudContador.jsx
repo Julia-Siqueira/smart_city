@@ -18,12 +18,12 @@ function CrudContador() {
     const handleCreate = async () => {
         const newData = { sensor_id: sensorId, valor, timestamp };
         try {
-            await axios.post("http://127.0.0.1:8000/api/contador/", newData, {
+            await axios.post("http://127.0.0.1:8000/api/create/contador/", newData, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             });
-            alert("Dado de umidade criado com sucesso!");
+            alert("Dados dos contadores criados com sucesso!");
             resetForm();
             fetchContadorData(); // Atualiza os dados após criar
         } catch (err) {
@@ -38,7 +38,7 @@ function CrudContador() {
 
         // Aqui, removemos os milissegundos ao fazer a atualização
         const updatedData = {
-            sensor_id: sensorId,
+            sensor: sensorId,
             valor: valor,
             timestamp: timestamp.split(".")[0], // Remove os milissegundos
         };
@@ -151,7 +151,7 @@ function CrudContador() {
                 {/* Formulário de Atualizar Dado */}
                 {editingId && (
                     <div style={styles.post}>
-                        <h2>Atualizar Dado de Umidade</h2>
+                        <h2>Atualizar Dados dos Contadores</h2>
                         <input
                             type="number"
                             placeholder="Sensor ID"
@@ -184,7 +184,7 @@ function CrudContador() {
 
                 {/* Lista de dados */}
                 <div style={styles.post}>
-                    <h2>Dados de Umidade</h2>
+                    <h2>Dados dos Contadores</h2>
                     <table style={styles.tabela}>
                         <thead>
                             <tr>
@@ -197,7 +197,7 @@ function CrudContador() {
                         <tbody>
                             {contadorData.map((data) => (
                                 <tr key={data.id}>
-                                    <td>{data.sensor_id}</td>
+                                    <td>{data.id}</td>
                                     <td>{data.valor}</td>
                                     <td>{data.timestamp}</td>
                                     <td>

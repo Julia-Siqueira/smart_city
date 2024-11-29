@@ -35,6 +35,7 @@ urlpatterns = [
     path('', abre_login , name='login'),
     path('cadastro', abre_cadastro , name='cadastro'),
     path('api/create_user/', CreateUserAPIViewSet.as_view(), name='create_user'),
+    
     path('api/login/', login_view, name='login'),
     path('api/', include(router.urls)),
     path('api/visao_geral', abre_visao_geral, name='visao_geral'),
@@ -45,13 +46,22 @@ urlpatterns = [
     path('api/umidade_filter/', UmidadeFilterView.as_view(), name='umidade_filter'),
     path('api/luminosidade_filter/', LuminosidadeFilterView.as_view(), name='luminosidade_filter'),
     path('api/contador_filter/', ContadorFilterView.as_view(), name='contador_filter'),
+
     path('upload/sensores/', views.upload_sensores, name='upload_sensores'),
     path('upload/contadores/', views.upload_contador, name='upload_contadores'),
     path('upload/luminosidade/', views.upload_luminosidade, name='upload_luminosidade'),
     path('upload/temperatura/', views.upload_temperatura, name='upload_temperatura'),
     path('upload/umidade/', views.upload_umidade, name='upload_umidade'),
+
     path('api/umidade/<int:id>/', views.update_umidade, name='update_umidade'),
     path('api/create/umidade/', views.create_umidade, name='create_umidade'),
 
+    path('api/luminosidade/<int:id>/', views.update_luminosidade, name='update_luminosidade'),
+    path('api/create/luminosidade/', views.create_luminosidade, name='create_luminosidade'),
 
+    path('api/contador/<int:id>/', views.update_contador, name='update_contador'),
+    path('api/create/contador/', views.create_contador, name='create_contador'),
+
+    path('api/temperatura/<int:id>/', views.update_contador, name='update_contador'),
+    path('api/create/contador/', views.create_contador, name='create_contador'),
 ]

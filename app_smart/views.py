@@ -388,6 +388,54 @@ def update_umidade(request, id):
 
     return JsonResponse({'message': 'Dado atualizado com sucesso'}, status=200)
 
+@api_view(['PUT'])
+def update_luminosidade(request, id):
+    try:
+        luminosidade_data = LuminosidadeData.objects.get(id=id)
+    except LuminosidadeData.DoesNotExist:
+        return JsonResponse({'error': 'Dado não encontrado'}, status=404)
+
+    # Aqui estamos buscando o objeto Sensor pelo ID enviado
+    sensor_id = request.data.get('sensor')  # 'sensor' no corpo da requisição
+
+    try:
+        sensor = Sensor.objects.get(id=sensor_id)
+    except Sensor.DoesNotExist:
+        return JsonResponse({'error': f'Sensor com ID {sensor_id} não encontrado'}, status=404)
+
+    # Atualizando os campos com os dados fornecidos
+    luminosidade_data.sensor = sensor  # Atribuindo o objeto Sensor
+    luminosidade_data.valor = request.data.get('valor', luminosidade_data.valor)
+    luminosidade_data.timestamp = request.data.get('timestamp', luminosidade_data.timestamp)
+
+    luminosidade_data.save()
+
+    return JsonResponse({'message': 'Dado atualizado com sucesso'}, status=200)
+
+@api_view(['PUT'])
+def update_contador(request, id):
+    try:
+        contador_data = ContadorData.objects.get(id=id)
+    except ContadorData.DoesNotExist:
+        return JsonResponse({'error': 'Dado não encontrado'}, status=404)
+
+    # Aqui estamos buscando o objeto Sensor pelo ID enviado
+    sensor_id = request.data.get('sensor')  # 'sensor' no corpo da requisição
+
+    try:
+        sensor = Sensor.objects.get(sensor_id=sensor_id)
+    except Sensor.DoesNotExist:
+        return JsonResponse({'error': f'Sensor com ID {sensor_id} não encontrado'}, status=404)
+
+    # Atualizando os campos com os dados fornecidos
+    contador_data.sensor = sensor  # Atribuindo o objeto Sensor
+    contador_data.valor = request.data.get('valor', contador_data.valor)
+    contador_data.timestamp = request.data.get('timestamp', contador_data.timestamp)
+
+    contador_data.save()
+
+    return JsonResponse({'message': 'Dado atualizado com sucesso'}, status=200)
+
 
 
 @api_view(['POST'])
@@ -398,6 +446,38 @@ def create_umidade(request):
         timestamp = request.data.get('timestamp')
 
         UmidadeData.objects.create(
+            sensor_id=sensor_id,
+            valor=valor,
+            timestamp=timestamp
+        )
+        return JsonResponse({'message': 'Dado criado com sucesso'}, status=201)
+    except Exception as e:
+        return JsonResponse({'error': 'Erro ao criar dado', 'details': str(e)}, status=400)
+    
+@api_view(['POST'])
+def create_luminosidade(request):
+    try:
+        sensor_id = request.data.get('sensor_id')
+        valor = request.data.get('valor')
+        timestamp = request.data.get('timestamp')
+
+        LuminosidadeData.objects.create(
+            sensor_id=sensor_id,
+            valor=valor,
+            timestamp=timestamp
+        )
+        return JsonResponse({'message': 'Dado criado com sucesso'}, status=201)
+    except Exception as e:
+        return JsonResponse({'error': 'Erro ao criar dado', 'details': str(e)}, status=400)
+    
+@api_view(['POST'])
+def create_contador(request):
+    try:
+        sensor_id = request.data.get('sensor_id')
+        valor = request.data.get('valor')
+        timestamp = request.data.get('timestamp')
+
+        ContadorData.objects.create(
             sensor_id=sensor_id,
             valor=valor,
             timestamp=timestamp
