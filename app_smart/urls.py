@@ -1,6 +1,6 @@
 from django.urls import path, include
 from . import views
-from .views import UploadCSV, return_html, login_view, abre_login, abre_cadastro, abre_visao_geral
+from .views import UploadCSV, login_view, abre_login, abre_cadastro, abre_visao_geral
 from app_smart.api.viewsets import CreateUserAPIViewSet
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from app_smart.api.viewsets import CreateUserAPIViewSet, SensorViewSet
@@ -50,5 +50,8 @@ urlpatterns = [
     path('upload/luminosidade/', views.upload_luminosidade, name='upload_luminosidade'),
     path('upload/temperatura/', views.upload_temperatura, name='upload_temperatura'),
     path('upload/umidade/', views.upload_umidade, name='upload_umidade'),
+    path('api/umidade/<int:id>/', views.update_umidade, name='update_umidade'),
+    path('api/create/umidade/', views.create_umidade, name='create_umidade'),
+
 
 ]

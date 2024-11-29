@@ -1,13 +1,8 @@
-import React, { useState } from "react";
+import React, { act, useState } from "react";
 
 function CarregarForm({ title, actionUrl }) {
     const [fileName, setFileName] = useState('');
     const [file, setFile] = useState(null);
-
-    const getAuthToken = () => {
-        return localStorage.getItem('authToken');
-    }
-    
 
     // Atualiza o nome do arquivo selecionado
     const handleFileChange = (e) => {
@@ -17,7 +12,7 @@ function CarregarForm({ title, actionUrl }) {
     };
 
     // Envia o arquivo via formulário
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         // Verifica se há um arquivo selecionado
@@ -25,39 +20,35 @@ function CarregarForm({ title, actionUrl }) {
             alert("Por favor, selecione um arquivo para enviar.");
             return;
         }
+        const token = localStorage.getItem('authToken');
+        if(!token){
+            alert('Você está sem o token')
+            return;
+        }
 
         const formData = new FormData();
         formData.append('file', file);
 
-        const token = getAuthToken();
+        try{
+            const response = await fetch(actionUrl, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+                body: formData,
+            });
 
-        // Envia o arquivo para o servidor
-        fetch(actionUrl, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${token}`
-            },
-            body: formData,
-            
-        })
-        .then(response => {
             if(!response.ok){
-                throw new Error(`Erro ao enviar o arquivo: ${response.statusText}`)
+                throw new Error(`Erro ao enviar o arquivo: ${response.status} ${response.statusText}`);
             }
-            response.json();
-        })
-     
-        .then(data => {
-            if (data.message) {
-                alert(data.message);
-            } else {
-                alert("Erro ao enviar arquivo.");
-            }
-        })
-        .catch(err => {
-            console.error('Erro ao enviar o arquivo:', err);
-            alert('Erro ao enviar o arquivo');
-        });
+
+            const data = await response.json();
+            alert(data.message || 'Arquivo enviado!')
+        }
+        catch(error){
+            console.error('Erro ao enviar o arquivo:', error);
+            alert('Erro ao enviar o arquivo. Verifique os detalhes no console.')
+        }
     };
 
     return (

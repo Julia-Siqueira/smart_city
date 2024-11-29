@@ -9,17 +9,22 @@ from .forms import formularioCSV
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 from rest_framework import status, viewsets
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, authentication_classes
 import csv
 from datetime import datetime
 from dateutil import parser
 from django import forms
 from app_smart.models import TemperaturaData, Sensor, UmidadeData, LuminosidadeData, ContadorData
 from .forms import formularioCSV
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework import serializers
 from django.core.exceptions import ValidationError
+from rest_framework.authentication import TokenAuthentication
+import logging
+
+# Configuração básica de log
+logger = logging.getLogger(__name__)
 
 
 def abre_cadastro(request):
@@ -63,14 +68,13 @@ def UploadCSV(request, modelo_da_classe, campos_esperados):
                     model_instance.save()
                     success_count += 1
 
-                return render(request, 'csv.html', {
-                    'form': form,
+                return JsonResponse({
                     'message': f'Sucesso: {success_count} registro(s) carregado(s).'
-                })
+                }, status=200)
 
-        return render(request, 'sensores.html', {'form': form, 'message': 'Arquivo inválido.'})
+        return JsonResponse({'error': 'Arquivo inválido.'}, status=400)
 
-    return render(request, 'sensores.html', {'form': formularioCSV()})
+    return JsonResponse({'error': 'Método não permitido.'}, status=405)
    
 
 @api_view(['POST'])
@@ -86,71 +90,255 @@ def login_view(request):
     else:
         return Response({'sucess': False, 'message': 'Credenciais inválidas'}, status=status.HTTP_401_UNAUTHORIZED)
 
-def return_html(request):
-    return render(request, 'api/sensores.html')
 
 @api_view(['POST'])
-@permission_classes([IsAuthenticated])
+# @authentication_classes([TokenAuthentication])
+# @permission_classes([IsAuthenticated])
 def upload_sensores(request):
-    campos_esperados = ['tipo', 'unidade_medida', 'latitude', 'longitude', 'localizacao', 'responsavel', 'status_operacional', 'obsrevacao', 'mac_address']
-    
-    if request.method == 'POST' and request.FILES.get('file'):
-        file = request.FILES['file']
+    campos_esperados = [
+        'tipo', 'unidade_medida', 'latitude', 'longitude',
+        'localizacao', 'responsavel', 'status_operacional',
+        'observacao', 'mac_address'
+    ]
 
-        if not file.name.endswith('.csv'):
-            return JsonResponse({'error': 'O arquivo deve ser um CSV'}, status=400)
-        
-        try:
-            csv_data = file.read().decode('utf-8').splitlines()
-            reader = csv.DictReader(csv_data)
+    if not request.FILES.get('file'):
+        return JsonResponse({'error': 'Nenhum arquivo enviado.'}, status=400)
 
-            for row in reader:
-                for campo in campos_esperados:
-                    if campo not in row:
-                        raise ValidationError(f'O campo "{campo}" está faltando no arquivo')
+    file = request.FILES['file']
 
+    if not file.name.endswith('.csv'):
+        return JsonResponse({'error': 'O arquivo deve ser um CSV.'}, status=400)
+
+    try:
+        csv_data = file.read().decode('utf-8').splitlines()
+        reader = csv.DictReader(csv_data)
+
+        for row in reader:
+            for campo in campos_esperados:
+                if campo not in row:
+                    raise ValidationError(f'O campo "{campo}" está faltando no arquivo.')
+
+            # Insere no banco de dados
             Sensor.objects.create(
-                tipo = row['tipo'],
-                unidade_medida = row['unidade_medida'],
-                latitude = row['latitude'],
-                longitude = row['longitude'],
-                localizacao = row['localizacao'],
-                responsavel = row['responsavel'],
-                status_operacional = row['status_operacional'],
-                observacao = row['observacao'],
-                mac_address = row['mac_address']
+                tipo=row['tipo'],
+                unidade_medida=row['unidade_medida'],
+                latitude=row['latitude'],
+                longitude=row['longitude'],
+                localizacao=row['localizacao'],
+                responsavel=row['responsavel'],
+                status_operacional=row['status_operacional'],
+                observacao=row['observacao'],
+                mac_address=row['mac_address']
             )
 
-            return JsonResponse({'message': 'Arquivo processado e dados inseridos com sucesso'})
-        
-        except ValidationError as e:
-            return JsonResponse({'error': str(e)}, status=400)
-        except Exception as e:
-            return JsonResponse({'error': 'Erro ao processar o arquivo.', 'details': str(e)}, status=500)
+        return JsonResponse({'message': 'Arquivo processado e dados inseridos com sucesso.'}, status=200)
 
-    return render(request, 'api/sensores.html')   
+    except ValidationError as e:
+        return JsonResponse({'error': str(e)}, status=400)
+    except Exception as e:
+        return JsonResponse({'error': 'Erro ao processar o arquivo.', 'details': str(e)}, status=500)
 
-        
+@api_view(['POST'])  
 def upload_temperatura(request):
-    campos_esperados = ['sensor_id', 'valor', 'timestamp']
-    return UploadCSV(request,  TemperaturaData, campos_esperados)
+    campos_esperados = ['valor', 'sensor_id', 'timestamp']
 
+    if not request.FILES.get('file'):
+        logger.error('Nenhum arquivo enviado.')
+        return JsonResponse({'error': 'Nenhum arquivo enviado.'}, status=400)
+
+    file = request.FILES['file']
+    logger.info(f"Arquivo recebido: {file.name}, Tipo: {file.content_type}")
+
+    if not file.name.endswith('.csv'):
+        logger.error(f'Arquivo enviado não é CSV: {file.name}')
+        return JsonResponse({'error': 'O arquivo deve ser um CSV.'}, status=400)
+
+    try:
+        file_content = file.read().decode('utf-8')
+        if not file_content:
+            logger.error('Arquivo CSV vazio.')
+            return JsonResponse({'error': 'O arquivo está vazio.'}, status=400)
+
+        csv_data = file_content.splitlines()
+        reader = csv.DictReader(csv_data)
+
+        for row in reader:
+            for campo in campos_esperados:
+                if campo not in row:
+                    logger.error(f'Campo faltando no arquivo: {campo}')
+                    raise ValidationError(f'O campo "{campo}" está faltando no arquivo.')
+
+            sensor = Sensor.objects.get(sensor_id=row['sensor_id'])
+            timestamp = datetime.strptime(row['timestamp'].split('.')[0], '%Y-%m-%d %H:%M:%S')
+            valor = float(row['valor'])  # Converter o valor para float
+
+            # Inserir no banco de dados
+            TemperaturaData.objects.create(
+                valor=valor,
+                timestamp=timestamp,
+                sensor=sensor
+            )
+
+        logger.info('Arquivo processado com sucesso.')
+        return JsonResponse({'message': 'Arquivo processado e dados inseridos com sucesso.'}, status=200)
+
+    except ValidationError as e:
+        logger.error(f'Erro de validação: {str(e)}')
+        return JsonResponse({'error': str(e)}, status=400)
+    except Exception as e:
+        logger.error(f'Erro inesperado: {str(e)}')
+        return JsonResponse({'error': 'Erro ao processar o arquivo.', 'details': str(e)}, status=500)
+
+@api_view(['POST'])  
 def upload_umidade(request):
-    campos_esperados = ['sensor_id', 'valor', 'timestamp']
-    return UploadCSV(request,  UmidadeData, campos_esperados)
+    campos_esperados = ['valor', 'sensor_id', 'timestamp']
 
+    if not request.FILES.get('file'):
+        logger.error('Nenhum arquivo enviado.')
+        return JsonResponse({'error': 'Nenhum arquivo enviado.'}, status=400)
+
+    file = request.FILES['file']
+    logger.info(f"Arquivo recebido: {file.name}, Tipo: {file.content_type}")
+
+    if not file.name.endswith('.csv'):
+        logger.error(f'Arquivo enviado não é CSV: {file.name}')
+        return JsonResponse({'error': 'O arquivo deve ser um CSV.'}, status=400)
+
+    try:
+        file_content = file.read().decode('utf-8')
+        if not file_content:
+            logger.error('Arquivo CSV vazio.')
+            return JsonResponse({'error': 'O arquivo está vazio.'}, status=400)
+
+        csv_data = file_content.splitlines()
+        reader = csv.DictReader(csv_data)
+
+        for row in reader:
+            for campo in campos_esperados:
+                if campo not in row:
+                    logger.error(f'Campo faltando no arquivo: {campo}')
+                    raise ValidationError(f'O campo "{campo}" está faltando no arquivo.')
+
+            sensor = Sensor.objects.get(sensor_id=row['sensor_id'])
+            timestamp = datetime.strptime(row['timestamp'].split('.')[0], '%Y-%m-%d %H:%M:%S')
+            valor = float(row['valor'])  # Converter o valor para float
+
+            # Inserir no banco de dados
+            UmidadeData.objects.create(
+                valor=valor,
+                timestamp=timestamp,
+                sensor=sensor
+            )
+
+        logger.info('Arquivo processado com sucesso.')
+        return JsonResponse({'message': 'Arquivo processado e dados inseridos com sucesso.'}, status=200)
+
+    except ValidationError as e:
+        logger.error(f'Erro de validação: {str(e)}')
+        return JsonResponse({'error': str(e)}, status=400)
+    except Exception as e:
+        logger.error(f'Erro inesperado: {str(e)}')
+        return JsonResponse({'error': 'Erro ao processar o arquivo.', 'details': str(e)}, status=500)
+
+@api_view(['POST'])
 def upload_luminosidade(request):
-    campos_esperados = ['sensor_id', 'valor', 'timestamp']
-    return UploadCSV(request,  LuminosidadeData, campos_esperados)
+    campos_esperados = ['valor', 'sensor_id', 'timestamp']
 
+    if not request.FILES.get('file'):
+        logger.error('Nenhum arquivo enviado.')
+        return JsonResponse({'error': 'Nenhum arquivo enviado.'}, status=400)
+
+    file = request.FILES['file']
+    logger.info(f"Arquivo recebido: {file.name}, Tipo: {file.content_type}")
+
+    if not file.name.endswith('.csv'):
+        logger.error(f'Arquivo enviado não é CSV: {file.name}')
+        return JsonResponse({'error': 'O arquivo deve ser um CSV.'}, status=400)
+
+    try:
+        file_content = file.read().decode('utf-8')
+        if not file_content:
+            logger.error('Arquivo CSV vazio.')
+            return JsonResponse({'error': 'O arquivo está vazio.'}, status=400)
+
+        csv_data = file_content.splitlines()
+        reader = csv.DictReader(csv_data)
+
+        for row in reader:
+            for campo in campos_esperados:
+                if campo not in row:
+                    logger.error(f'Campo faltando no arquivo: {campo}')
+                    raise ValidationError(f'O campo "{campo}" está faltando no arquivo.')
+
+            sensor = Sensor.objects.get(sensor_id=row['sensor_id'])
+            timestamp = datetime.strptime(row['timestamp'].split('.')[0], '%Y-%m-%d %H:%M:%S')
+            valor = float(row['valor'])  # Converter o valor para float
+
+            # Inserir no banco de dados
+            LuminosidadeData.objects.create(
+                valor=valor,
+                timestamp=timestamp,
+                sensor=sensor
+            )
+
+        logger.info('Arquivo processado com sucesso.')
+        return JsonResponse({'message': 'Arquivo processado e dados inseridos com sucesso.'}, status=200)
+
+    except ValidationError as e:
+        logger.error(f'Erro de validação: {str(e)}')
+        return JsonResponse({'error': str(e)}, status=400)
+    except Exception as e:
+        logger.error(f'Erro inesperado: {str(e)}')
+        return JsonResponse({'error': 'Erro ao processar o arquivo.', 'details': str(e)}, status=500)
+
+
+@api_view(['POST'])
 def upload_contador(request):
-    campos_esperados = ['sensor_id', 'timestamp']
+    campos_esperados = ['timestamp', 'sensor_id']
 
-    if request.method == 'POST':
-        return UploadCSV(request,  ContadorData, campos_esperados)
-    
-    form = formularioCSV()
-    return render(request, 'api/sensores.html', {'form': form})
+    if not request.FILES.get('file'):
+        logger.error('Nenhum arquivo enviado.')
+        return JsonResponse({'error': 'Nenhum arquivo enviado.'}, status=400)
+
+    file = request.FILES['file']
+    logger.info(f"Arquivo recebido: {file.name}, Tipo: {file.content_type}")
+
+    if not file.name.endswith('.csv'):
+        logger.error(f'Arquivo enviado não é CSV: {file.name}')
+        return JsonResponse({'error': 'O arquivo deve ser um CSV.'}, status=400)
+
+    try:
+        file_content = file.read().decode('utf-8')
+        if not file_content:
+            logger.error('Arquivo CSV vazio.')
+            return JsonResponse({'error': 'O arquivo está vazio.'}, status=400)
+
+        csv_data = file_content.splitlines()
+        reader = csv.DictReader(csv_data)
+
+        for row in reader:
+            for campo in campos_esperados:
+                if campo not in row:
+                    logger.error(f'Campo faltando no arquivo: {campo}')
+                    raise ValidationError(f'O campo "{campo}" está faltando no arquivo.')
+
+            timestamp = datetime.strptime(row['timestamp'], '%Y-%m-%d %H:%M:%S')
+            # Insere no banco de dados
+            ContadorData.objects.create(
+                timestamp=timestamp,
+                sensor_id=row['sensor_id']
+            )
+
+        logger.info('Arquivo processado com sucesso.')
+        return JsonResponse({'message': 'Arquivo processado e dados inseridos com sucesso.'}, status=200)
+
+    except ValidationError as e:
+        logger.error(f'Erro de validação: {str(e)}')
+        return JsonResponse({'error': str(e)}, status=400)
+    except Exception as e:
+        logger.error(f'Erro inesperado: {str(e)}')
+        return JsonResponse({'error': 'Erro ao processar o arquivo.', 'details': str(e)}, status=500)
+
 
 def get_umidade(self, request, *args, **kwargs):
     # Lógica para o método GET
@@ -175,3 +363,45 @@ def get_umidade(self, request, *args, **kwargs):
     queryset = UmidadeData.objects.filter(filters)
     serializer = serializers.UmidadeDataSerializer(queryset, many=True)
     return Response(serializer.data)
+
+@api_view(['PUT'])
+def update_umidade(request, id):
+    try:
+        umidade_data = UmidadeData.objects.get(id=id)
+    except UmidadeData.DoesNotExist:
+        return JsonResponse({'error': 'Dado não encontrado'}, status=404)
+
+    # Aqui estamos buscando o objeto Sensor pelo ID enviado
+    sensor_id = request.data.get('sensor')  # 'sensor' no corpo da requisição
+
+    try:
+        sensor = Sensor.objects.get(id=sensor_id)
+    except Sensor.DoesNotExist:
+        return JsonResponse({'error': f'Sensor com ID {sensor_id} não encontrado'}, status=404)
+
+    # Atualizando os campos com os dados fornecidos
+    umidade_data.sensor = sensor  # Atribuindo o objeto Sensor
+    umidade_data.valor = request.data.get('valor', umidade_data.valor)
+    umidade_data.timestamp = request.data.get('timestamp', umidade_data.timestamp)
+
+    umidade_data.save()
+
+    return JsonResponse({'message': 'Dado atualizado com sucesso'}, status=200)
+
+
+
+@api_view(['POST'])
+def create_umidade(request):
+    try:
+        sensor_id = request.data.get('sensor_id')
+        valor = request.data.get('valor')
+        timestamp = request.data.get('timestamp')
+
+        UmidadeData.objects.create(
+            sensor_id=sensor_id,
+            valor=valor,
+            timestamp=timestamp
+        )
+        return JsonResponse({'message': 'Dado criado com sucesso'}, status=201)
+    except Exception as e:
+        return JsonResponse({'error': 'Erro ao criar dado', 'details': str(e)}, status=400)

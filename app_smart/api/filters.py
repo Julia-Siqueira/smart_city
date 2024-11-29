@@ -156,3 +156,12 @@ class ContadorFilterView(APIView):
             'results': serializer.data
         }
         return Response(response_data)
+    
+# Filtro para o modelo ContadorData
+class ContadorDataFilter(django_filters.FilterSet):
+    sensor = django_filters.NumberFilter(field_name="sensor__id", lookup_expr="exact")
+    timestamp = django_filters.DateTimeFromToRangeFilter(field_name="timestamp")
+
+    class Meta:
+        model = ContadorData
+        fields = ["sensor", "timestamp"]

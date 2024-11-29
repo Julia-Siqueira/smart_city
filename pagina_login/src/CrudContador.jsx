@@ -3,13 +3,13 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Navbar from "./Components/NavBar"; // Supondo que você tenha o componente Navbar
 
-function CrudUmidade() {
+function CrudContador() {
     const [valor, setValor] = useState("");
     const [sensorId, setSensorId] = useState("");
     const [timestamp, setTimestamp] = useState("");
     const [editingId, setEditingId] = useState(null);  // Para saber se está em modo de atualização
     const [error, setError] = useState("");
-    const [umidadeData, setUmidadeData] = useState([]);
+    const [contadorData, setContadorData] = useState([]);
 
     const token = localStorage.getItem("authToken");
     const navigate = useNavigate();
@@ -18,14 +18,14 @@ function CrudUmidade() {
     const handleCreate = async () => {
         const newData = { sensor_id: sensorId, valor, timestamp };
         try {
-            await axios.post("http://127.0.0.1:8000/api/create/umidade/", newData, {
+            await axios.post("http://127.0.0.1:8000/api/contador/", newData, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             });
             alert("Dado de umidade criado com sucesso!");
             resetForm();
-            fetchUmidadeData(); // Atualiza os dados após criar
+            fetchContadorData(); // Atualiza os dados após criar
         } catch (err) {
             console.error("Erro ao criar o dado:", err);
             setError("Erro ao criar o dado.");
@@ -35,44 +35,42 @@ function CrudUmidade() {
     // Função para atualizar um dado (PUT)
     const handleUpdate = async (e) => {
         e.preventDefault();
-    
-        let formattedTimestamp = timestamp;
-        if (!formattedTimestamp.includes(":")) {
-            formattedTimestamp += ":00"; // Adiciona os segundos, caso necessário
-        }
-    
-        // Enviar 'sensor' (ID do Sensor) no corpo da requisição
+
+        // Aqui, removemos os milissegundos ao fazer a atualização
         const updatedData = {
-            sensor: sensorId,  // Aqui é necessário usar 'sensor' e não 'sensor_id'
+            sensor_id: sensorId,
             valor: valor,
-            timestamp: formattedTimestamp,  // Corrigido
+            timestamp: timestamp.split(".")[0], // Remove os milissegundos
         };
-    
+
+        console.log('Dados a serem enviados para atualização:', updatedData);
+
         try {
-            const response = await axios.put(`http://127.0.0.1:8000/api/umidade/${editingId}/`, updatedData, {
+            const response = await axios.put(`http://127.0.0.1:8000/api/contador/${editingId}/`, updatedData, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             });
             alert('Dado atualizado com sucesso');
-            fetchUmidadeData(); // Atualiza os dados após a atualização
+            console.log('Resposta da atualização:', response.data);
+            fetchContadorData(); // Atualiza os dados após atualizar
+            resetForm();
         } catch (error) {
             console.log('Erro ao atualizar o dado:', error);
             alert('Erro ao atualizar o dado');
         }
     };
-    
-    
+
     // Função para excluir um dado (DELETE)
     const handleDelete = async (id) => {
         try {
-            await axios.delete(`http://127.0.0.1:8000/api/umidade/${id}/`, {
+            await axios.delete(`http://127.0.0.1:8000/api/contador/${id}/`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             });
             alert("Dado de umidade excluído com sucesso!");
-            fetchUmidadeData(); // Atualiza os dados após excluir
+            fetchContadorData(); // Atualiza os dados após excluir
         } catch (err) {
             console.error("Erro ao excluir o dado:", err);
             setError("Erro ao excluir o dado.");
@@ -80,14 +78,14 @@ function CrudUmidade() {
     };
 
     // Função para buscar dados de umidade (GET)
-    const fetchUmidadeData = async () => {
+    const fetchContadorData = async () => {
         try {
-            const response = await axios.get("http://127.0.0.1:8000/api/umidade/", {
+            const response = await axios.get("http://127.0.0.1:8000/api/contador/", {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             });
-            setUmidadeData(response.data);
+            setContadorData(response.data);
         } catch (err) {
             console.error("Erro ao buscar dados de umidade:", err);
             setError("Erro ao buscar dados.");
@@ -104,7 +102,6 @@ function CrudUmidade() {
 
     // Função para preencher o formulário com dados do sensor ao editar
     const handleEdit = (id, sensorId, valor, timestamp) => {
-        console.log("Editando", id, sensorId, valor, timestamp);  // Adicione esse log
         setEditingId(id);
         setSensorId(sensorId);
         setValor(valor);
@@ -113,14 +110,14 @@ function CrudUmidade() {
 
     // Carregar os dados ao montar o componente
     useEffect(() => {
-        fetchUmidadeData();
+        fetchContadorData();
     }, []);
 
     return (
         <div style={styles.body}>
             <Navbar />
             <div style={styles.container}>
-                <h1 style={styles.titulo}>CRUD de Dados de Umidade</h1>
+                <h1 style={styles.titulo}>CRUD de Dados dos Contadores</h1>
 
                 {/* Formulário de Criar Novo Dado */}
                 <div style={styles.post}>
@@ -155,8 +152,6 @@ function CrudUmidade() {
                 {editingId && (
                     <div style={styles.post}>
                         <h2>Atualizar Dado de Umidade</h2>
-                        
-                        {/* Adicione o campo de Sensor */}
                         <input
                             type="number"
                             placeholder="Sensor ID"
@@ -164,7 +159,6 @@ function CrudUmidade() {
                             onChange={(e) => setSensorId(e.target.value)}
                             style={styles.caixaGet}
                         />
-                        
                         <input
                             type="number"
                             placeholder="Valor"
@@ -172,7 +166,6 @@ function CrudUmidade() {
                             onChange={(e) => setValor(e.target.value)}
                             style={styles.caixaGet}
                         />
-                        
                         <input
                             type="datetime-local"
                             placeholder="Timestamp"
@@ -180,12 +173,12 @@ function CrudUmidade() {
                             onChange={(e) => setTimestamp(e.target.value)}
                             style={styles.caixaGet}
                         />
-                        
                         <button onClick={handleUpdate} style={styles.btnU}>
                             Atualizar
                         </button>
                     </div>
                 )}
+
                 {/* Mensagens de erro */}
                 {error && <div style={styles.error}>{error}</div>}
 
@@ -202,7 +195,7 @@ function CrudUmidade() {
                             </tr>
                         </thead>
                         <tbody>
-                            {umidadeData.map((data) => (
+                            {contadorData.map((data) => (
                                 <tr key={data.id}>
                                     <td>{data.sensor_id}</td>
                                     <td>{data.valor}</td>
@@ -321,4 +314,4 @@ const styles = {
     },
 };
 
-export default CrudUmidade;
+export default CrudContador;

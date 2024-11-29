@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "./Components/NavBar";
 import ApexChart from "./Components/PieChart";
@@ -7,6 +7,16 @@ import CarregarForm from "./Components/CarregarForm";  // Importando o component
 // quando é uma função, precisa começar com letra maiúscula
 function Sensores() {
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const token = localStorage.getItem('authToken');
+        console.log("Token1: ", token)
+        if(!token){
+            alert('Você precisa do token para entrar');
+            navigate('/');
+        }
+    }, [navigate])
+
     const handleNavigate = () => {
         navigate('/crud');
     };
@@ -24,22 +34,26 @@ function Sensores() {
                     <button style={styles.button} onClick={handleNavigateTabelas}>Ver Tabelas</button>
                 </div>
                 <CarregarForm title="Sensores" actionUrl="http://127.0.0.1:8000/upload/sensores/" />
-                <CarregarForm title="Contador" actionUrl="/upload_contadores" />
-                <CarregarForm title="Luminosidade" actionUrl="/upload_luminosidade" />
-                <CarregarForm title="Temperatura" actionUrl="/upload_temperatura" />
-                <CarregarForm title="Umidade" actionUrl="/upload_umidade" />
+                <CarregarForm title="Contador" actionUrl="http://127.0.0.1:8000/upload/contadores/" />
+                <CarregarForm title="Luminosidade" actionUrl="http://127.0.0.1:8000/upload/luminosidade/" />
+                <CarregarForm title="Temperatura" actionUrl="http://127.0.0.1:8000/upload/temperatura/" />
+                <CarregarForm title="Umidade" actionUrl="http://127.0.0.1:8000/upload/umidade/" />
             </div>
             <div style={styles.secaoGraficos}>
                 <div style={styles.divGraficos}>
-                    <h1 style={styles.tituloGrafico}>Hoje</h1>
+                    <h1 style={styles.tituloGrafico}>Umidade</h1>
                     <ApexChart />
                 </div>
                 <div style={styles.divGraficos}>
-                    <h1 style={styles.tituloGrafico}>Esse Mês</h1>
+                    <h1 style={styles.tituloGrafico}>Temperatura</h1>
                     <ApexChart />
                 </div>
                 <div style={styles.divGraficos}>
-                    <h1 style={styles.tituloGrafico}>Esse Ano</h1>
+                    <h1 style={styles.tituloGrafico}>Contador</h1>
+                    <ApexChart />
+                </div>
+                <div style={styles.divGraficos}>
+                    <h1 style={styles.tituloGrafico}>Luminosidade</h1>
                     <ApexChart />
                 </div>
             </div>

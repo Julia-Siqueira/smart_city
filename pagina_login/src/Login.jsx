@@ -1,72 +1,51 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
-function Login() {
+const Login = () => {
 
     // estados
     const[username, setUserName] = useState('');
     const[password, setPassword] = useState('');
     const[errorMessage, setErrorMessage] = useState('');
-    const[token, setToken] = useState('');
     const navigate = useNavigate();
     const location = useLocation();
 
-    // const chamada quando o formulário é enviado
-    // recebe informações do evento que aconteceu e válida elas
+    useEffect(() => {
+        const token = localStorage.getItem("authToken")
+        console.log("Token1: ", token)
+        localStorage.clear();
+        console.log("Token2: ", token)
+    }, []);
+
     const handleSubmit = async (e) => {
-        e.preventDefault(); // não deixa a página recarregar
-        
+        e.preventDefault();
+        setErrorMessage('');
+
+        if(!username || !password){
+            alert('Preencha todos os campos');
+            return;
+        }
+
         try{
-            const tokenResponse = await fetch('http://localhost:8000/api/token/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    username: 'smart_user',
-                    password: '123456'
-                }),
+            const tokenResponse = await axios.post("http://127.0.0.1:8000/api/token/", {
+                username: username,
+                password: password
             });
 
-            const tokenData = await tokenResponse.json();
+            const token = tokenResponse.data.access;
+            localStorage.setItem('authToken', token);
+            alert('Bem vindo(a) ao Smart City');
 
-            if (tokenData.access) {
-                localStorage.setItem('authToken', tokenData.access);
-                const response = await fetch('http://localhost:8000/api/login/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${tokenData.access}`, 
-                    },
-                    body: JSON.stringify({
-                        username,
-                        password
-                    }),
-                });
+            const from = location.state?.from || "/sensores";
+            navigate(from);
 
-                const data = await response.json();
-                
-                if(data.success){
+        }
 
-                    setToken(data.token);
-                    console.log('Token recebido:', tokenData.access);
-                    localStorage.setItem('authToken', data.token);
-                    
-                    alert('Login bem-sucedido!');
-                    navigate('/sensores');
-
-                } else{
-                    setErrorMessage(data.message || 'Erro desconhecido');
-                }
-            
-            } else{
-                setErrorMessage(tokenData.detail || 'Erro ao obter o token');
-            }
-    } catch(error){
-        setErrorMessage('Erro de conexão.')
-        console.log('Erro:', error);
-    }
-
+        catch(err){
+            console.error("Erro ao fazer login:", err);
+            setErrorMessage('Erro ao fazer login.')
+        }
     };
 
     return (
