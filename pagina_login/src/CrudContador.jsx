@@ -14,6 +14,16 @@ function CrudContador() {
     const token = localStorage.getItem("authToken");
     const navigate = useNavigate();
 
+    const navigateTemperatura = () => {
+        navigate('/temperaturaCRUD'); // Redireciona para a página "/contador"
+    };
+      const navigateUmidade = () => {
+        navigate('/umidadeCRUD'); // Redireciona para a página "/contador"
+    };
+      const navigateLuminosidade = () => {
+        navigate('/luminosidadeCRUD'); // Redireciona para a página "/contador"
+    };
+
     // Função para criar um novo dado (POST)
     const handleCreate = async () => {
         const newData = { sensor_id: sensorId, valor, timestamp };
@@ -69,7 +79,7 @@ function CrudContador() {
                     Authorization: `Bearer ${token}`,
                 },
             });
-            alert("Dado de umidade excluído com sucesso!");
+            alert("Dado de contadores excluído com sucesso!");
             fetchContadorData(); // Atualiza os dados após excluir
         } catch (err) {
             console.error("Erro ao excluir o dado:", err);
@@ -87,7 +97,7 @@ function CrudContador() {
             });
             setContadorData(response.data);
         } catch (err) {
-            console.error("Erro ao buscar dados de umidade:", err);
+            console.error("Erro ao buscar dados de contador:", err);
             setError("Erro ao buscar dados.");
         }
     };
@@ -118,10 +128,15 @@ function CrudContador() {
             <Navbar />
             <div style={styles.container}>
                 <h1 style={styles.titulo}>CRUD de Dados dos Contadores</h1>
+                <div style={styles.botoes}>
+                <button style={styles.button} onClick={navigateTemperatura}>Temperatura</button>
+                <button style={styles.button} onClick={navigateLuminosidade}>Luminosidade</button>
+                <button style={styles.button} onClick={navigateUmidade}>Umidade</button>
+                </div>
 
                 {/* Formulário de Criar Novo Dado */}
                 <div style={styles.post}>
-                    <h2>Criar Novo Dado de Umidade</h2>
+                    <h2>Criar Novo Dado de Contadores</h2>
                     <input
                         type="number"
                         placeholder="Sensor ID"
@@ -311,6 +326,25 @@ const styles = {
     titulo: {
         color: "white",
         fontSize: "50px",
+    },
+    botoes:{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center'
+      },
+    button: {
+    padding: '10px 20px',
+    fontSize: '16px',
+    backgroundColor: '#68a1c9',
+    color: 'white',
+    border: 'none',
+    borderRadius: '15px',
+    cursor: 'pointer',
+    marginBottom: '20px',
+    width: '100%',
+    height: '40px',
+    fontFamily: 'Lexend, sans-serif',
+    marginLeft: '20px'
     },
 };
 

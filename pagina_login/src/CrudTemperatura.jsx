@@ -14,16 +14,26 @@ function CrudTemperatura() {
     const token = localStorage.getItem("authToken");
     const navigate = useNavigate();
 
+    const navigateContadores = () => {
+        navigate('/contadorCRUD'); // Redireciona para a página "/contador"
+    };
+      const navigateUmidade = () => {
+        navigate('/umidadeCRUD'); // Redireciona para a página "/contador"
+    };
+      const navigateLuminosidade = () => {
+        navigate('/luminosidadeCRUD'); // Redireciona para a página "/contador"
+    };
+
     // Função para criar um novo dado (POST)
     const handleCreate = async () => {
         const newData = { sensor_id: sensorId, valor, timestamp };
         try {
-            await axios.post("http://127.0.0.1:8000/api/create/contador/", newData, {
+            await axios.post("http://127.0.0.1:8000/api/create/temperatura/", newData, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             });
-            alert("Dados dos contadores criados com sucesso!");
+            alert("Dados das temperaturas criados com sucesso!");
             resetForm();
             fetchTemperaturaData(); // Atualiza os dados após criar
         } catch (err) {
@@ -46,7 +56,7 @@ function CrudTemperatura() {
         console.log('Dados a serem enviados para atualização:', updatedData);
 
         try {
-            const response = await axios.put(`http://127.0.0.1:8000/api/contador/${editingId}/`, updatedData, {
+            const response = await axios.put(`http://127.0.0.1:8000/api/temperatura/${editingId}/`, updatedData, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -64,12 +74,12 @@ function CrudTemperatura() {
     // Função para excluir um dado (DELETE)
     const handleDelete = async (id) => {
         try {
-            await axios.delete(`http://127.0.0.1:8000/api/contador/${id}/`, {
+            await axios.delete(`http://127.0.0.1:8000/api/temperatura/${id}/`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             });
-            alert("Dado de umidade excluído com sucesso!");
+            alert("Dado de temperatura excluído com sucesso!");
             fetchTemperaturaData(); // Atualiza os dados após excluir
         } catch (err) {
             console.error("Erro ao excluir o dado:", err);
@@ -80,14 +90,14 @@ function CrudTemperatura() {
     // Função para buscar dados de umidade (GET)
     const fetchTemperaturaData = async () => {
         try {
-            const response = await axios.get("http://127.0.0.1:8000/api/contador/", {
+            const response = await axios.get("http://127.0.0.1:8000/api/temperatura/", {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             });
             setTemperaturaData(response.data);
         } catch (err) {
-            console.error("Erro ao buscar dados de umidade:", err);
+            console.error("Erro ao buscar dados de temperatura:", err);
             setError("Erro ao buscar dados.");
         }
     };
@@ -118,6 +128,11 @@ function CrudTemperatura() {
             <Navbar />
             <div style={styles.container}>
                 <h1 style={styles.titulo}>CRUD de Dados das Temperaturas</h1>
+                <div style={styles.botoes}>
+                <button style={styles.button} onClick={navigateContadores}>Contadores</button>
+                <button style={styles.button} onClick={navigateLuminosidade}>Luminosidade</button>
+                <button style={styles.button} onClick={navigateUmidade}>Umidade</button>
+                </div>
 
                 {/* Formulário de Criar Novo Dado */}
                 <div style={styles.post}>
@@ -311,6 +326,25 @@ const styles = {
     titulo: {
         color: "white",
         fontSize: "50px",
+    },
+    botoes:{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center'
+      },
+    button: {
+    padding: '10px 20px',
+    fontSize: '16px',
+    backgroundColor: '#68a1c9',
+    color: 'white',
+    border: 'none',
+    borderRadius: '15px',
+    cursor: 'pointer',
+    marginBottom: '20px',
+    width: '100%',
+    height: '40px',
+    fontFamily: 'Lexend, sans-serif',
+    marginLeft: '20px'
     },
 };
 

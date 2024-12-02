@@ -436,6 +436,30 @@ def update_contador(request, id):
 
     return JsonResponse({'message': 'Dado atualizado com sucesso'}, status=200)
 
+@api_view(['PUT'])
+def update_temperatura(request, id):
+    try:
+        temperatura_data = TemperaturaData.objects.get(id=id)
+    except TemperaturaData.DoesNotExist:
+        return JsonResponse({'error': 'Dado não encontrado'}, status=404)
+
+    # Aqui estamos buscando o objeto Sensor pelo ID enviado
+    sensor_id = request.data.get('sensor')  # 'sensor' no corpo da requisição
+
+    try:
+        sensor = Sensor.objects.get(sensor_id=sensor_id)
+    except Sensor.DoesNotExist:
+        return JsonResponse({'error': f'Sensor com ID {sensor_id} não encontrado'}, status=404)
+
+    # Atualizando os campos com os dados fornecidos
+    temperatura_data.sensor = sensor  # Atribuindo o objeto Sensor
+    temperatura_data.valor = request.data.get('valor', temperatura_data.valor)
+    temperatura_data.timestamp = request.data.get('timestamp', temperatura_data.timestamp)
+
+    temperatura_data.save()
+
+    return JsonResponse({'message': 'Dado atualizado com sucesso'}, status=200)
+
 
 
 @api_view(['POST'])
@@ -478,6 +502,22 @@ def create_contador(request):
         timestamp = request.data.get('timestamp')
 
         ContadorData.objects.create(
+            sensor_id=sensor_id,
+            valor=valor,
+            timestamp=timestamp
+        )
+        return JsonResponse({'message': 'Dado criado com sucesso'}, status=201)
+    except Exception as e:
+        return JsonResponse({'error': 'Erro ao criar dado', 'details': str(e)}, status=400)
+    
+@api_view(['POST'])
+def create_temperatura(request):
+    try:
+        sensor_id = request.data.get('sensor_id')
+        valor = request.data.get('valor')
+        timestamp = request.data.get('timestamp')
+
+        TemperaturaData.objects.create(
             sensor_id=sensor_id,
             valor=valor,
             timestamp=timestamp

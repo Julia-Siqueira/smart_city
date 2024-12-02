@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "./Components/NavBar";
-import ApexChart from "./Components/PieChart";
+import ApexChart from "./Components/AreaChart";
 import CarregarForm from "./Components/CarregarForm";  // Importando o componente CarregarForm
 
 // quando é uma função, precisa começar com letra maiúscula
@@ -18,11 +18,19 @@ function Sensores() {
     }, [navigate])
 
     const handleNavigate = () => {
-        navigate('/crud');
+        navigate('/temperaturaCRUD');
     };
     const handleNavigateTabelas = () => {
         navigate('/tabelas');
     };
+
+    const sampleData = [
+        { data: "2024-11-29 11:54:11", valor: "34.12" },
+        { data: "2024-11-29 11:54:12", valor: "28.74" },
+        { data: "2024-11-30 11:54:13", valor: "24.80" },
+        { data: "2024-11-30 11:54:14", valor: "37.14" },
+      ];
+      
 
     return (
         <div style={styles.body}>

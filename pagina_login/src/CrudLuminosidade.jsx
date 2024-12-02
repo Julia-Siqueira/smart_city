@@ -14,6 +14,16 @@ function CrudLuminosidade() {
     const token = localStorage.getItem("authToken");
     const navigate = useNavigate();
 
+    const navigateTemperatura = () => {
+        navigate('/temperaturaCRUD'); // Redireciona para a página "/contador"
+    };
+      const navigateUmidade = () => {
+        navigate('/umidadeCRUD'); // Redireciona para a página "/contador"
+    };
+      const navigateContador = () => {
+        navigate('/contadorCRUD'); // Redireciona para a página "/contador"
+    };
+
     // Função para criar um novo dado (POST)
     const handleCreate = async () => {
         const newData = { sensor_id: sensorId, valor, timestamp };
@@ -122,6 +132,12 @@ function CrudLuminosidade() {
             <Navbar />
             <div style={styles.container}>
                 <h1 style={styles.titulo}>CRUD de Dados de Luminosidade</h1>
+
+                <div style={styles.botoes}>
+                <button style={styles.button} onClick={navigateTemperatura}>Temperatura</button>
+                <button style={styles.button} onClick={navigateContador}>Contador</button>
+                <button style={styles.button} onClick={navigateUmidade}>Umidade</button>
+                </div>
 
                 {/* Formulário de Criar Novo Dado */}
                 <div style={styles.post}>
@@ -319,6 +335,25 @@ const styles = {
     titulo: {
         color: "white",
         fontSize: "50px",
+    },
+    botoes:{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center'
+      },
+    button: {
+    padding: '10px 20px',
+    fontSize: '16px',
+    backgroundColor: '#68a1c9',
+    color: 'white',
+    border: 'none',
+    borderRadius: '15px',
+    cursor: 'pointer',
+    marginBottom: '20px',
+    width: '100%',
+    height: '40px',
+    fontFamily: 'Lexend, sans-serif',
+    marginLeft: '20px'
     },
 };
 

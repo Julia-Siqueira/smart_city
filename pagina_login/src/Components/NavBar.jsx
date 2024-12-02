@@ -12,7 +12,7 @@ const Navbar = () => {
               <Link to="/sensores" style={styles.navLink}>Tabelas</Link>
             </li>
             <li style={styles.navItem}>
-              <Link to="/crud" style={styles.navLink}>CRUD</Link>
+              <Link to="/temperaturaCRUD" style={styles.navLink}>CRUD</Link>
             </li>
             <li style={styles.navItem}>
               <Link to="/services" style={styles.navLink}>Estatísticas</Link>

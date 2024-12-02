@@ -22,6 +22,13 @@ from app_smart.api.viewsets import(
     ContadorDataViewSet,
 )
 
+from django.http import JsonResponse
+import requests
+
+def fastapi_proxy(request):
+    response = requests.get("http://127.0.0.1:5000/dados")
+    return JsonResponse(response.json(), safe=False)
+
 router = DefaultRouter()
 router.register(r'sensores', SensorViewSet) # 'r' é para uma string bruta
 # router.register(r'arquivos', UploadCSV, basename='upload_csv')
@@ -62,6 +69,8 @@ urlpatterns = [
     path('api/contador/<int:id>/', views.update_contador, name='update_contador'),
     path('api/create/contador/', views.create_contador, name='create_contador'),
 
-    path('api/temperatura/<int:id>/', views.update_contador, name='update_contador'),
-    path('api/create/contador/', views.create_contador, name='create_contador'),
+    path('api/temperatura/<int:id>/', views.update_temperatura, name='update_temperatura'),
+    path('api/create/temperatura/', views.create_temperatura, name='create_temperatura'),
+
+    path("api/fastapi-dados/", fastapi_proxy, name="fastapi_dados"),
 ]
