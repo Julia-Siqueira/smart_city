@@ -15,6 +15,7 @@ import CrudSensor from './CrudUmidade.jsx';
 import CrudLuminosidade from './CrudLuminosidade.jsx';
 import CrudContador from './CrudContador.jsx';
 import CrudTemperatura from './CrudTemperatura.jsx';
+import Estatisticas from './Estatisticas.jsx';
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
           <Route path="/luminosidadeCRUD" element={<CrudLuminosidade/>} />
           <Route path="/temperaturaCRUD" element={<CrudTemperatura />} />
           <Route path="/contadorCRUD" element={<CrudContador />} />
+          <Route path="/estatisticas" element={<Estatisticas />} />
         </Routes>
       </Router>
     </div>

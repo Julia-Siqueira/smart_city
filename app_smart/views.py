@@ -11,7 +11,7 @@ from rest_framework.response import Response
 from rest_framework import status, viewsets
 from rest_framework.decorators import api_view, authentication_classes
 import csv
-from datetime import datetime
+from datetime import datetime, timedelta
 from dateutil import parser
 from django import forms
 from app_smart.models import TemperaturaData, Sensor, UmidadeData, LuminosidadeData, ContadorData
@@ -25,7 +25,6 @@ import logging
 
 # Configuração básica de log
 logger = logging.getLogger(__name__)
-
 
 def abre_cadastro(request):
     return HttpResponseRedirect('http://localhost:3000/cadastro')
@@ -525,3 +524,61 @@ def create_temperatura(request):
         return JsonResponse({'message': 'Dado criado com sucesso'}, status=201)
     except Exception as e:
         return JsonResponse({'error': 'Erro ao criar dado', 'details': str(e)}, status=400)
+
+def get_contador_data(request):
+    data = ContadorData.objects.all()
+    data_formatada = []
+
+    for item in data:
+        data_formatada.append({
+            "timestamp": item.timestamp.strftime("%Y-%m-%d %H:%M:%S"),
+            "valor": item.valor,
+            "sensor": str(item.sensor),
+        })
+
+    return JsonResponse(data_formatada, safe=False)
+
+def get_umidade_data(request):
+    data = UmidadeData.objects.all()
+    data_formatada = []
+
+    for item in data:
+        data_formatada.append({
+            "timestamp": item.timestamp.strftime("%Y-%m-%d %H:%M:%S"),
+            "valor": item.valor,
+            "sensor": str(item.sensor),
+        })
+
+    return JsonResponse(data_formatada, safe=False)
+
+def get_temperatura_data(request):
+    data = TemperaturaData.objects.all()
+    data_formatada = []
+
+    for item in data:
+        data_formatada.append({
+            "timestamp": item.timestamp.strftime("%Y-%m-%d %H:%M:%S"),
+            "valor": item.valor,
+            "sensor": str(item.sensor),
+        })
+
+    return JsonResponse(data_formatada, safe=False)
+
+def get_luminosidade_data(request):
+    filtro = request.GET.get('filtro', 'dia')  # Obtém o tipo de filtro: 'day' ou 'week'
+    hoje = datetime.now().date()
+    
+    if filtro == 'week':
+        inicio_semana = hoje - timedelta(days=hoje.weekday())
+        data = ContadorData.objects.filter(timestamp__date__gte=inicio_semana)
+    else:
+        data = ContadorData.objects.filter(timestamp__date=hoje)
+    
+    data_formatada = []
+    for item in data:
+        data_formatada.append({
+            "timestamp": item.timestamp.strftime("%Y-%m-%d %H:%M:%S"),
+            "valor": item.valor,
+        })
+    
+    return JsonResponse(data_formatada, safe=False)

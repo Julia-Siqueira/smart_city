@@ -8,7 +8,7 @@ import GraficoTemperatura from "./Components/GraficoTemperatura";
 import GraficoLuminosidade from "./Components/GraficoLuminosidade";
 
 // quando é uma função, precisa começar com letra maiúscula
-function Sensores() {
+function Estatisticas() {
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -20,36 +20,10 @@ function Sensores() {
         }
     }, [navigate])
 
-    const handleNavigate = () => {
-        navigate('/temperaturaCRUD');
-    };
-    const handleNavigateTabelas = () => {
-        navigate('/tabelas');
-    };
-
-    const sampleData = [
-        { data: "2024-11-29 11:54:11", valor: "34.12" },
-        { data: "2024-11-29 11:54:12", valor: "28.74" },
-        { data: "2024-11-30 11:54:13", valor: "24.80" },
-        { data: "2024-11-30 11:54:14", valor: "37.14" },
-      ];
-      
 
     return (
         <div style={styles.body}>
             <Navbar />
-            <div style={styles.containerFormulario}>
-                <div>
-                    <h1 style={styles.h1}>Upload de Arquivos CSV</h1>
-                    <button style={styles.button} onClick={handleNavigate}>Fazer Alterações</button>
-                    <button style={styles.button} onClick={handleNavigateTabelas}>Ver Tabelas</button>
-                </div>
-                <CarregarForm title="Sensores" actionUrl="http://127.0.0.1:8000/upload/sensores/" />
-                <CarregarForm title="Contador" actionUrl="http://127.0.0.1:8000/upload/contadores/" />
-                <CarregarForm title="Luminosidade" actionUrl="http://127.0.0.1:8000/upload/luminosidade/" />
-                <CarregarForm title="Temperatura" actionUrl="http://127.0.0.1:8000/upload/temperatura/" />
-                <CarregarForm title="Umidade" actionUrl="http://127.0.0.1:8000/upload/umidade/" />
-            </div>
 
             <h1 style={styles.titulo}>Dados de Hoje</h1>
 
@@ -68,7 +42,28 @@ function Sensores() {
                 </div>
                 <div style={styles.divGraficos}>
                     <h1 style={styles.tituloGrafico}>Luminosidade</h1>
-                    <GraficoLuminosidade filterType="week" />
+                    <GraficoLuminosidade />
+                </div>
+            </div>
+
+            <h1 style={styles.titulo}>Dados da Semana</h1>
+
+            <div style={styles.secaoGraficos2}>
+                <div style={styles.divGraficos}>
+                    <h1 style={styles.tituloGrafico}>Umidade</h1>
+                    <GraficoUmidade/>
+                </div>
+                <div style={styles.divGraficos}>
+                    <h1 style={styles.tituloGrafico}>Temperatura</h1>
+                    <GraficoTemperatura/>
+                </div>
+                <div style={styles.divGraficos}>
+                    <h1 style={styles.tituloGrafico}>Contador</h1>
+                    <GraficoContador />
+                </div>
+                <div style={styles.divGraficos}>
+                    <h1 style={styles.tituloGrafico}>Luminosidade</h1>
+                    <GraficoLuminosidade />
                 </div>
             </div>
         </div>
@@ -148,7 +143,7 @@ export const styles = {
         fontFamily: "Lexend",
     },
     divGraficos: {
-        backgroundColor: "#336F99",
+        backgroundColor: "#75ABD1",
         padding: "30px 30px",
         borderRadius: "25px",
         width: "20%",
@@ -166,12 +161,18 @@ export const styles = {
         justifyContent: "space-evenly",
 
     },
+    secaoGraficos2: {
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-evenly",
+
+    },
     titulo:{
         color: "white",
         textAlign: "center",
-        marginTop: "100px",
+        marginTop: "50px",
         fontSize: "50px",
     }
 };
 
-export default Sensores;
+export default Estatisticas;

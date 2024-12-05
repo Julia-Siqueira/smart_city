@@ -72,5 +72,8 @@ urlpatterns = [
     path('api/temperatura/<int:id>/', views.update_temperatura, name='update_temperatura'),
     path('api/create/temperatura/', views.create_temperatura, name='create_temperatura'),
 
-    path("api/fastapi-dados/", fastapi_proxy, name="fastapi_dados"),
+    path("api/contador-data/", views.get_contador_data, name="contador-data"),
+    path("api/umidade-data/", views.get_umidade_data, name="umidade-data"),
+    path("api/temperatura-data/", views.get_temperatura_data, name="temperatura-data"),
+    path("api/luminosidade-data/", views.get_luminosidade_data, name="luminosidade-data"),
 ]

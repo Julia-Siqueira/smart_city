@@ -15,7 +15,7 @@ const Navbar = () => {
               <Link to="/temperaturaCRUD" style={styles.navLink}>CRUD</Link>
             </li>
             <li style={styles.navItem}>
-              <Link to="/services" style={styles.navLink}>Estatísticas</Link>
+              <Link to="/estatisticas" style={styles.navLink}>Estatísticas</Link>
             </li>
           </ul>
         </nav>
