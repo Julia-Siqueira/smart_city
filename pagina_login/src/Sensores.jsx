@@ -56,20 +56,31 @@ function Sensores() {
             <div style={styles.secaoGraficos}>
                 <div style={styles.divGraficos}>
                     <h1 style={styles.tituloGrafico}>Umidade</h1>
-                    <GraficoUmidade/>
+                    <GraficoUmidade filterType="dia"/>
                 </div>
                 <div style={styles.divGraficos}>
                     <h1 style={styles.tituloGrafico}>Temperatura</h1>
-                    <GraficoTemperatura/>
+                    <GraficoTemperatura filterType="dia"/>
                 </div>
                 <div style={styles.divGraficos}>
                     <h1 style={styles.tituloGrafico}>Contador</h1>
-                    <GraficoContador />
+                    <GraficoContador filterType="dia"/>
                 </div>
                 <div style={styles.divGraficos}>
                     <h1 style={styles.tituloGrafico}>Luminosidade</h1>
-                    <GraficoLuminosidade filterType="week" />
+                    <GraficoLuminosidade filterType="dia"/>
                 </div>
+            </div>
+
+            <h1 style={styles.titulo}>Sobre o Smart City</h1>
+            <div style={styles.containerFormulario}>
+                <p>Esse projeto tem como objetivo ser uma fonte de informações sobre sensores de Temperatura, Umidade, Contadores e Luminosidade 
+                que estarão distribuídos por diferentes áreas do SENAI, fornecendo informações aos administradores. Além disso, através do Smart City,
+                podemos inserir, editar e excluir informações dos bancos de dados de forma prática, além de podermos inserir arquivos de extensão .csv. 
+
+                O desenvolvimento desse protótipo nos ensina a integrar o front-end e o back-end, além de nos ensinar a realizar chamadas através
+                de URLs.
+                </p>
             </div>
         </div>
     );
@@ -96,7 +107,8 @@ export const styles = {
         display: "flex",
         flexDirection: "row",
         margin: "0 auto",
-        marginTop: '20px'
+        marginTop: '20px',
+        marginBottom: '20px'
     },
     h1: {
         fontSize: "30px",

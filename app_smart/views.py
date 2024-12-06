@@ -526,7 +526,36 @@ def create_temperatura(request):
         return JsonResponse({'error': 'Erro ao criar dado', 'details': str(e)}, status=400)
 
 def get_contador_data(request):
+    filtro = request.GET.get('filtro', None)
+    data_selecionada = request.GET.get('data', None)
+
     data = ContadorData.objects.all()
+
+    if filtro and data_selecionada:
+        try:
+            objeto_data = datetime.strptime(data_selecionada, '%Y-%m-%d')
+
+            if filtro == 'dia':
+                data = data.filter(
+                    timestamp__year = objeto_data.year,
+                    timestamp__month = objeto_data.month,
+                    timestamp__day = objeto_data.day
+                )
+
+            elif filtro == 'mes':
+                data = data.filter(
+                    timestamp__year = objeto_data.year,
+                    timestamp__month = objeto_data.month,
+                )
+
+            elif filtro == 'ano':
+                data = data.filter(
+                    timestamp__year = objeto_data.year,
+                )
+
+        except ValueError:
+            return JsonResponse({'error': 'Invalid Date Format'}, status=400)
+
     data_formatada = []
 
     for item in data:
@@ -538,8 +567,38 @@ def get_contador_data(request):
 
     return JsonResponse(data_formatada, safe=False)
 
+
 def get_umidade_data(request):
+    filtro = request.GET.get('filtro', None)
+    data_selecionada = request.GET.get('data', None)
+
     data = UmidadeData.objects.all()
+
+    if filtro and data_selecionada:
+        try:
+            objeto_data = datetime.strptime(data_selecionada, '%Y-%m-%d')
+
+            if filtro == 'dia':
+                data = data.filter(
+                    timestamp__year = objeto_data.year,
+                    timestamp__month = objeto_data.month,
+                    timestamp__day = objeto_data.day
+                )
+
+            elif filtro == 'mes':
+                data = data.filter(
+                    timestamp__year = objeto_data.year,
+                    timestamp__month = objeto_data.month,
+                )
+
+            elif filtro == 'ano':
+                data = data.filter(
+                    timestamp__year = objeto_data.year,
+                )
+
+        except ValueError:
+            return JsonResponse({'error': 'Invalid Date Format'}, status=400)
+
     data_formatada = []
 
     for item in data:
@@ -552,7 +611,36 @@ def get_umidade_data(request):
     return JsonResponse(data_formatada, safe=False)
 
 def get_temperatura_data(request):
+    filtro = request.GET.get('filtro', None)
+    data_selecionada = request.GET.get('data', None)
+
     data = TemperaturaData.objects.all()
+
+    if filtro and data_selecionada:
+        try:
+            objeto_data = datetime.strptime(data_selecionada, '%Y-%m-%d')
+
+            if filtro == 'dia':
+                data = data.filter(
+                    timestamp__year = objeto_data.year,
+                    timestamp__month = objeto_data.month,
+                    timestamp__day = objeto_data.day
+                )
+
+            elif filtro == 'mes':
+                data = data.filter(
+                    timestamp__year = objeto_data.year,
+                    timestamp__month = objeto_data.month,
+                )
+
+            elif filtro == 'ano':
+                data = data.filter(
+                    timestamp__year = objeto_data.year,
+                )
+
+        except ValueError:
+            return JsonResponse({'error': 'Invalid Date Format'}, status=400)
+
     data_formatada = []
 
     for item in data:
@@ -565,20 +653,44 @@ def get_temperatura_data(request):
     return JsonResponse(data_formatada, safe=False)
 
 def get_luminosidade_data(request):
-    filtro = request.GET.get('filtro', 'dia')  # Obtém o tipo de filtro: 'day' ou 'week'
-    hoje = datetime.now().date()
-    
-    if filtro == 'week':
-        inicio_semana = hoje - timedelta(days=hoje.weekday())
-        data = ContadorData.objects.filter(timestamp__date__gte=inicio_semana)
-    else:
-        data = ContadorData.objects.filter(timestamp__date=hoje)
-    
+    filtro = request.GET.get('filtro', None)
+    data_selecionada = request.GET.get('data', None)
+
+    data = LuminosidadeData.objects.all()
+
+    if filtro and data_selecionada:
+        try:
+            objeto_data = datetime.strptime(data_selecionada, '%Y-%m-%d')
+
+            if filtro == 'dia':
+                data = data.filter(
+                    timestamp__year = objeto_data.year,
+                    timestamp__month = objeto_data.month,
+                    timestamp__day = objeto_data.day
+                )
+
+            elif filtro == 'mes':
+                data = data.filter(
+                    timestamp__year = objeto_data.year,
+                    timestamp__month = objeto_data.month,
+                )
+
+            elif filtro == 'ano':
+                data = data.filter(
+                    timestamp__year = objeto_data.year,
+                )
+
+        except ValueError:
+            return JsonResponse({'error': 'Invalid Date Format'}, status=400)
+
     data_formatada = []
+
     for item in data:
         data_formatada.append({
             "timestamp": item.timestamp.strftime("%Y-%m-%d %H:%M:%S"),
             "valor": item.valor,
+            "sensor": str(item.sensor),
         })
-    
+
     return JsonResponse(data_formatada, safe=False)
+

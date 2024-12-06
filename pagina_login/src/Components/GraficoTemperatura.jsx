@@ -2,40 +2,48 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Chart } from 'react-google-charts';
 
-const GraficoTemperatura = () => {
+const GraficoTemperatura = ({ filterType }) => {
   const [chartData, setChartData] = useState([]);
 
-  useEffect(() => {
-    axios.get('http://localhost:8000/api/temperatura-data/')  // Ajuste a URL conforme necessário
-      .then((response) => {
-        const hoje = new Date().toISOString().split('T')[0];
-        const formattedData = [['Data', 'Valor']]; // Cabeçalhos do gráfico
-        response.data.forEach(item => {
-          // Converte a string timestamp para um objeto Date
-          const date = new Date(item.timestamp);
-          const dataAtual = date.toISOString().split('T')[0];
-          const value = item.valor;
+  const fetchData = () => {
+    const url = `http://localhost:8000/api/temperatura-data/?filtro=${filterType}`;
 
-          if(dataAtual === hoje){
-            formattedData.push([date, value]);
-          }
-          
+    axios.get(url)
+      .then((response) => {
+        const parametros = [['Data', 'Valor']];
+
+        response.data.forEach((item) => {
+          const date = new Date(item.timestamp);
+          const value = parseFloat(item.valor);
+          parametros.push([date, value]);
         });
-        setChartData(formattedData);
+
+        setChartData(parametros);
       })
       .catch((error) => {
-        console.error("Erro ao buscar os dados:", error);
+        console.error('Erro ao buscar os dados: ', error);
       });
-  }, []);
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [filterType]);
 
   return (
     <div>
+
       {chartData.length > 1 ? (
         <Chart
           chartType="AreaChart"
           data={chartData}
           options={{
-            hAxis: { title: 'Data', titleTextStyle: { color: '#333' } },
+            hAxis: { 
+              title: 'Data', 
+              titleTextStyle: { color: '#333' },
+              format: filterType === 'dia' ? 'HH:mm' : 
+                      filterType === 'mes' ? 'dd' : 
+                      'MMM'
+            },
             vAxis: { title: 'Valor', minValue: 0 },
             legend: { position: 'bottom' },
           }}
@@ -43,7 +51,7 @@ const GraficoTemperatura = () => {
           height="400px"
         />
       ) : (
-        <p>Carregando dados...</p>
+        <p>Sem dados para o período selecionado</p>
       )}
     </div>
   );

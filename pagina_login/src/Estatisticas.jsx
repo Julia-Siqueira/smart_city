@@ -30,40 +30,60 @@ function Estatisticas() {
             <div style={styles.secaoGraficos}>
                 <div style={styles.divGraficos}>
                     <h1 style={styles.tituloGrafico}>Umidade</h1>
-                    <GraficoUmidade/>
+                    <GraficoUmidade filterType="dia"/>
                 </div>
                 <div style={styles.divGraficos}>
                     <h1 style={styles.tituloGrafico}>Temperatura</h1>
-                    <GraficoTemperatura/>
+                    <GraficoTemperatura filterType="dia"/>
                 </div>
                 <div style={styles.divGraficos}>
                     <h1 style={styles.tituloGrafico}>Contador</h1>
-                    <GraficoContador />
+                    <GraficoContador filterType='dia'/>
                 </div>
                 <div style={styles.divGraficos}>
                     <h1 style={styles.tituloGrafico}>Luminosidade</h1>
-                    <GraficoLuminosidade />
+                    <GraficoLuminosidade filterType='dia'/>
                 </div>
             </div>
 
-            <h1 style={styles.titulo}>Dados da Semana</h1>
+            <h1 style={styles.titulo}>Dados do Mês</h1>
 
-            <div style={styles.secaoGraficos2}>
+            <div style={styles.secaoGraficos}>
                 <div style={styles.divGraficos}>
                     <h1 style={styles.tituloGrafico}>Umidade</h1>
-                    <GraficoUmidade/>
+                    <GraficoUmidade filterType="mes"/>
                 </div>
                 <div style={styles.divGraficos}>
                     <h1 style={styles.tituloGrafico}>Temperatura</h1>
-                    <GraficoTemperatura/>
+                    <GraficoTemperatura filterType="mes"/>
                 </div>
                 <div style={styles.divGraficos}>
                     <h1 style={styles.tituloGrafico}>Contador</h1>
-                    <GraficoContador />
+                    <GraficoContador filterType="mes"/>
                 </div>
                 <div style={styles.divGraficos}>
                     <h1 style={styles.tituloGrafico}>Luminosidade</h1>
-                    <GraficoLuminosidade />
+                    <GraficoLuminosidade filterType="mes"/>
+                </div>
+            </div>
+
+            <h1 style={styles.titulo}>Dados do Ano</h1>
+            <div style={styles.secaoGraficos}>
+                <div style={styles.divGraficos}>
+                    <h1 style={styles.tituloGrafico}>Umidade</h1>
+                    <GraficoUmidade filterType="ano"/>
+                </div>
+                <div style={styles.divGraficos}>
+                    <h1 style={styles.tituloGrafico}>Temperatura</h1>
+                    <GraficoTemperatura filterType="ano"/>
+                </div>
+                <div style={styles.divGraficos}>
+                    <h1 style={styles.tituloGrafico}>Contador</h1>
+                    <GraficoContador filterType="ano"/>
+                </div>
+                <div style={styles.divGraficos}>
+                    <h1 style={styles.tituloGrafico}>Luminosidade</h1>
+                    <GraficoLuminosidade filterType="ano"/>
                 </div>
             </div>
         </div>
@@ -146,24 +166,25 @@ export const styles = {
         backgroundColor: "#75ABD1",
         padding: "30px 30px",
         borderRadius: "25px",
-        width: "20%",
+        width: "80%",
         textAlign: "center",
         display: "flex",
         flexDirection: "column",
-        margin: 0
+        margin: "20px"
     },
     tituloGrafico: {
         color: 'white',
     },
     secaoGraficos: {
         display: "flex",
-        flexDirection: "row",
-        justifyContent: "space-evenly",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center"
 
     },
     secaoGraficos2: {
         display: "flex",
-        flexDirection: "column",
+        flexDirection: "row",
         justifyContent: "space-evenly",
 
     },
