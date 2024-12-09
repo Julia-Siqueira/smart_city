@@ -76,4 +76,5 @@ urlpatterns = [
     path("api/umidade-data/", views.get_umidade_data, name="umidade-data"),
     path("api/temperatura-data/", views.get_temperatura_data, name="temperatura-data"),
     path("api/luminosidade-data/", views.get_luminosidade_data, name="luminosidade-data"),
+    path('api/teste/', views.teste, name='teste' )
 ]

@@ -88,6 +88,10 @@ def login_view(request):
         return Response({'success': True, 'message': 'Login bem sucedido!'}, status=status.HTTP_200_OK)
     else:
         return Response({'sucess': False, 'message': 'Credenciais inválidas'}, status=status.HTTP_401_UNAUTHORIZED)
+    
+
+def teste(request):
+    return('Deu certo')
 
 
 @api_view(['POST'])
