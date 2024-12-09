@@ -91,7 +91,7 @@ def login_view(request):
     
 
 def teste(request):
-    return('Deu certo')
+    return JsonResponse({'success': True, 'message': 'A página abriu'}, status=status.HTTP_200_OK)
 
 
 @api_view(['POST'])
