@@ -1,4 +1,2 @@
 user: smart_user
 password: 123456
-
-PAREI NO 10.5
