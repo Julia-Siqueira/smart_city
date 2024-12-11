@@ -9,7 +9,7 @@ const Navbar = () => {
           </div>
           <ul style={styles.navLinks}>
             <li style={styles.navItem}>
-              <Link to="/sensores" style={styles.navLink}>Tabelas</Link>
+              <Link to="/tabelas" style={styles.navLink}>Tabelas</Link>
             </li>
             <li style={styles.navItem}>
               <Link to="/temperaturaCRUD" style={styles.navLink}>CRUD</Link>
